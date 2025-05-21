@@ -2,8 +2,10 @@
     margin: 0;
     padding: 0; 
     font-family: 'HelveticaNeue';
-    /* font-family: sans-serif; */
     box-sizing: border-box;
+}
+html {
+    scroll-behavior: smooth;
 }
 body{
     background: #080808;
@@ -75,7 +77,7 @@ nav ul li a:hover::after{
     background: #ffffff;
 }
 
-/* -----------------------about----------------------- */
+/* ----------------------- about ----------------------- */
 #about{
     padding: 80px 0;
     color: #ffffff;
@@ -137,4 +139,21 @@ nav ul li a:hover::after{
 }
 .tab-contents.active-tab{
     display: block;
+}
+
+/* ----------------------- projects ----------------------- */
+#projects{
+    padding: 80px 0;
+    color: #ffffff;
+    background-image: url(images/484858259_18014097473705501_8788955211200007586_n.jpg);
+    background-size: cover;
+    background-position: center;
+}
+
+/* ----------------------- projects ----------------------- */
+#music{
+    padding: 80px 0;
+    color: #ffffff;
+    background-size: cover;
+    background-position: center;
 }
