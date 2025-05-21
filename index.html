@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="header">
+        <div class="container">
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Projects</a></li>
+                    <li><a href="#">Music</a></li>
+                </ul>
+            </nav>
+            <div class="header-text">
+                <p>my name is <span>Andrew</span></p>
+                <h1>welcome to my Portfolio</h1>
+            </div>
+            <!-- <audio class="player" controls loop>
+                <source src="music/268 200bpm prod bboy.wav" type="audio/wav">
+            </audio> -->
+        </div>
+    </div>
+    <!-- ----------------------- about ----------------------- -->
+    <div id="about">
+        <div class="container">
+            <div class="row">
+                <div class="about-col-1">
+                    <img src="images/PBS.jpg" title="NOT ME!!!!">
+                </div>
+                <div class="about-col-2">
+                    <h1 class="sub-title">About</h1>
+                    <p> Currently entering my 5th year of math & cs and passionate about making music. </p>
+
+                    <div class="tab-titles">
+                        <p class="tab-links active-link" onclick="opentab('skills')">Skills</p>
+                        <p class="tab-links" onclick="opentab('experience')">Experience</p>
+                        <p class="tab-links" onclick="opentab('education')">Education</p>
+                    </div>
+                    <div class="tab-contents active-tab" id="skills">
+                        <ul>
+                            <li><span>Aspiring UI/UX</span><br>learning to develop front end interfaces</li>
+                            <li><span>Web development</span><br>learning to develop backend using Spring</li>
+                        </ul>
+                    </div>
+                    <div class="tab-contents" id="experience">
+                        <ul>
+                            <li><span>Sept 2024 - Apr 2025</span><br>Quality Assurance Engineer at Scotiabank</li>
+                        </ul>
+                    </div>
+                    <div class="tab-contents" id="education">
+                        <ul>
+                            <li><span>2021 - Present</span><br>Honours Mathematics & Computer science at McMaster
+                                University</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        var tablinks = document.getElementsByClassName("tab-links");
+        var tabcontents = document.getElementsByClassName("tab-contents");
+
+        function opentab(tabname) {
+            for (tablink of tablinks) {
+                tablink.classList.remove("active-link");
+            }
+            for (tabcontent of tabcontents) {
+                tabcontent.classList.remove("active-tab");
+            }
+            event.currentTarget.classList.add("active-link");
+            document.getElementById(tabname).classList.add("active-tab");
+
+        }
+    </script>
+</body>
+
+</html>
