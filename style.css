@@ -14,7 +14,7 @@ body{
 #header{
     width: 100%;
     height: 100vh;
-    background-image: url(images/476027686_18009078761705501_4154935694233345762_n.jpg);
+    background-image: url(images/background_upscaled.jpg);
     background-size: cover;
     background-position: center;
 }
@@ -70,11 +70,35 @@ nav ul li a:hover::after{
     font-size: 7-px;
     color: rgb(184, 162, 162);
 }
+.icons img{
+    width: 50px;
+    height: auto;
+    transition: 0.3s ease-in-out;
+}
+.icons img:hover{
+    transform: scale(1.25);
+}
+.icons ul{
+    margin-top: 20px;
+    display: flex;
+    gap: 30px; 
+    list-style: none;
+    padding: 0;
+}
 .player{
     margin-top: 50px;
-    position: absolute;
+    position: fixed;
+    bottom: 20px; 
+    right: 20px; 
     width: 350px; 
-    background: #ffffff;
+    height: 100px;
+        z-index: 1000; /* Ensures it stays above other elements */
+
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 40px 100px rgba(255, 255, 255, 0.01);
+    padding: 30px;
+    overflow: hidden; 
+    color: rgb(134, 134, 134);
 }
 
 /* ----------------------- about ----------------------- */
