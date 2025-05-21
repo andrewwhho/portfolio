@@ -14,8 +14,10 @@ body{
 #header{
     width: 100%;
     height: 100vh;
-    background-image: url(images/background_upscaled.jpg);
+    /* background-image: url(images/background_upscaled.jpg); */
+    background-image: url(images/xav.gif);
     background-size: cover;
+    background-attachment: fixed;
     background-position: center;
 }
 .container{
@@ -59,16 +61,17 @@ nav ul li a:hover::after{
 .header-text:hover{
     font-size: 62px;
 }
-.header-text h1{
+.header-text span{ 
+    font-size: 75px;
+    color: #ffffff;
+    /* color: rgb(184, 162, 162); */
+}
+.header-text2{
     font-size: 30px;
     transition: 0.2s ease-in-out;
 }
-.header-text h1:hover{
+.header-text2:hover{
     font-size: 31px;
-}
-.header-text span{ 
-    font-size: 7-px;
-    color: rgb(184, 162, 162);
 }
 .icons img{
     width: 50px;
@@ -121,6 +124,9 @@ nav ul li a:hover::after{
 .about-col-2{
     flex-basis: 50%;
 }
+.about-col-2 h1{
+    color: #ffffff
+}
 .sub-title{
     font-size: 60px;
     font-weight: 600;
@@ -155,7 +161,7 @@ nav ul li a:hover::after{
     margin: 10px; 
 }
 .tab-contents ul li span{
-    color: #646464;
+    color: #ffffff;
     margin: 10px 0;
 }
 .tab-contents{
@@ -171,6 +177,7 @@ nav ul li a:hover::after{
     color: #ffffff;
     background-image: url(images/484858259_18014097473705501_8788955211200007586_n.jpg);
     background-size: cover;
+    background-attachment: fixed;
     background-position: center;
 }
 
