@@ -77,15 +77,30 @@
                                 <img src="icons/scotia.png" class="scotiaLogo">
                                 <span>
                                     Sept 2024 - Apr 2025<br>
-                                    <span class="qa-header"> Quality Assurance Engineer at Scotiabank</span>
+                                    <span class="qa-header"> Quality Assurance Engineer at Scotiabank</span> <br>
+                                    <div class="qa-dropdown">
+                                        <button> Details</button>
+                                        <div class="qa-dropdown-content">
+                                            <ul>
+                                                <li>blah blah blah</li>
+                                                <li>blah blah blah</li>
+                                                <li>blah blah blah</li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </span>
                             </li>
                         </ul>
                     </div>
                     <div class="tab-contents" id="education">
                         <ul>
-                            <li><span>2021 - Present</span><br>Honours Mathematics & Computer science at McMaster
-                                University</li>
+                            <li>
+                                <img src="icons/macLogo.png" class="macLogo">
+                                <span>
+                                    Sept 2021 - Present<br>
+                                    <span class="school-header"> Honours Mathematics & Computer Science at McmMaster University</span> <br>
+                                </span>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -135,6 +150,17 @@
             event.currentTarget.classList.add("active-link");
             document.getElementById(tabname).classList.add("active-tab");
         }
+
+        document.querySelector(".qa-dropdown button").addEventListener("click", function () {
+            document.querySelector(".qa-dropdown-content").classList.toggle("show");
+        });
+
+        // Close dropdown when clicking outside
+        window.addEventListener("click", function (event) {
+            if (!event.target.matches(".qa-dropdown button")) {
+                document.querySelector(".qa-dropdown-content").classList.remove("show");
+            }
+        });
     </script>
 </body>
 
