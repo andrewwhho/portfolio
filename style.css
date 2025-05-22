@@ -65,6 +65,7 @@ nav ul li a:hover::after{
     margin-top: 10%;
     font-size: 60px;
     transition: 0.2s ease-in-out;
+    cursor: default;
 }
 .header-text:hover{
     font-size: 62px;
@@ -78,6 +79,7 @@ nav ul li a:hover::after{
     width: 400px;
     font-size: 30px;
     transition: 0.2s ease-in-out;
+    cursor: default;
 }
 .header-text2:hover{
     font-size: 31px;
@@ -187,6 +189,7 @@ nav ul li a:hover::after{
     color: white;
     font-size: 20px;
     transition: all 0.3s ease-in-out;
+    cursor: default;
 }
 .stackItems li img{
     width: 35px;
@@ -199,11 +202,7 @@ nav ul li a:hover::after{
 
 /* -------- experience -------- */
 .scotiaLogo{
-    width: 70px;
-    height: auto;
-}
-.macLogo{
-    width: 100px;
+    width: 80px;
     height: auto;
 }
 .experienceItems li{
@@ -249,6 +248,23 @@ nav ul li a:hover::after{
 }
 .show {
     display: block;
+}
+
+/* -------- education -------- */
+.macLogo{
+    width: 100px;
+    height: auto;
+}
+.educationItems li{
+    display: flex;
+    align-items: center;
+    gap: 15px; 
+}
+.educationItems li span{
+    flex: 1;
+}
+.school-header{
+    font-size: 25px;
 }
 
 .tab-contents{
