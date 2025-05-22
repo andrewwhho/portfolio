@@ -27,10 +27,12 @@
             </div>
             <div class="icons">
                 <ul>
-                    <li><a title="GitHub" href="https://github.com/andrewwhho" target="_blank"><img src="icons/github.png" alt="GitHub"></a></li>
-                    <li><a title="LinkedIn" href="https://www.linkedin.com/in/andrewwhho/" target="_blank"><img src="icons/linkedin.png"
-                                alt="LinkedIn"></a></li>
-                    <li><a title="SoundCloud" href="https://soundcloud.com/1bboy" target="_blank"><img src="icons/soundcloud.png" alt="SoundCloud"></a>
+                    <li><a title="GitHub" href="https://github.com/andrewwhho" target="_blank"><img
+                                src="icons/github.png" alt="GitHub"></a></li>
+                    <li><a title="LinkedIn" href="https://www.linkedin.com/in/andrewwhho/" target="_blank"><img
+                                src="icons/linkedin.png" alt="LinkedIn"></a></li>
+                    <li><a title="SoundCloud" href="https://soundcloud.com/1bboy" target="_blank"><img
+                                src="icons/soundcloud.png" alt="SoundCloud"></a>
                     </li>
                     <li><a title="Download Resume" href=""><img src="icons/resume.png" alt="Resume"></a></li>
                     <li><a title="Contact me" href=""><img src="icons/mail.png" alt="Resume"></a></li>
@@ -55,19 +57,29 @@
                     <p> 5th year of Math & CS student who really fw coding and making music. </p>
 
                     <div class="tab-titles">
-                        <p class="tab-links active-link" onclick="opentab('skills')">Skills/Stack</p>
-                        <p class="tab-links" onclick="opentab('experience')">Experience</p>
-                        <p class="tab-links" onclick="opentab('education')">Education</p>
+                        <p class="tab-links active-link" onclick="opentab(event, 'skills')">Skills/Stack</p>
+                        <p class="tab-links" onclick="opentab(event, 'experience')">Experience</p>
+                        <p class="tab-links" onclick="opentab(event, 'education')">Education</p>
                     </div>
                     <div class="tab-contents active-tab" id="skills">
-                        <ul>
-                            <li><span>Aspiring UI/UX</span><br>learning to develop front end interfaces</li>
-                            <li><span>Web development</span><br>learning to develop backend using Spring</li>
+                        <ul class="stackItems">
+                            <li><span><img src="icons/stackIcons/java.png"></span>Java</li>
+                            <li><span><img src="icons/stackIcons/python.png"></span>Python</li>
+                            <li><span><img src="icons/stackIcons/spring.png"></span>Spring</li>
+                            <li><span><img src="icons/stackIcons/git.png"></span>Git</li>
+                            <li><span><img src="icons/stackIcons/html.png"></span>HTML</li>
+                            <li><span><img src="icons/stackIcons/css-3.png"></span>CSS</li>
                         </ul>
                     </div>
                     <div class="tab-contents" id="experience">
-                        <ul>
-                            <li><span>Sept 2024 - Apr 2025</span><br>Quality Assurance Engineer at Scotiabank</li>
+                        <ul class="experienceItems">
+                            <li>
+                                <img src="icons/scotia.png" class="scotiaLogo">
+                                <span>
+                                    Sept 2024 - Apr 2025<br>
+                                    <span class="qa-header"> Quality Assurance Engineer at Scotiabank</span>
+                                </span>
+                            </li>
                         </ul>
                     </div>
                     <div class="tab-contents" id="education">
@@ -110,16 +122,18 @@
         var tablinks = document.getElementsByClassName("tab-links");
         var tabcontents = document.getElementsByClassName("tab-contents");
 
-        function opentab(tabname) {
-            for (tablink of tablinks) {
+        function opentab(event, tabname) {
+            // Remove active class from all tabs
+            for (let tablink of tablinks) {
                 tablink.classList.remove("active-link");
             }
-            for (tabcontent of tabcontents) {
+            for (let tabcontent of tabcontents) {
                 tabcontent.classList.remove("active-tab");
             }
+
+            // Apply active class to the clicked tab using event.currentTarget
             event.currentTarget.classList.add("active-link");
             document.getElementById(tabname).classList.add("active-tab");
-
         }
     </script>
 </body>
