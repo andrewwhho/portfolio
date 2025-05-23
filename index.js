@@ -1,5 +1,5 @@
-var tablinks = document.getElementsByClassName("tab-links");
-var tabcontents = document.getElementsByClassName("tab-contents");
+let tablinks = document.getElementsByClassName("tab-links");
+let tabcontents = document.getElementsByClassName("tab-contents");
 
 function opentab(event, tabname) {
     // Remove active class from all tabs
