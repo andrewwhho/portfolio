@@ -283,6 +283,11 @@ nav ul li a:hover::after{
     background-attachment: fixed;
     background-position: center;
 }
+.project-header{
+    font-size: 60px;
+    font-weight: 600;
+    cursor: default;
+}
 
 /* ----------------------- music ----------------------- */
 #music{
@@ -290,4 +295,9 @@ nav ul li a:hover::after{
     color: #ffffff;
     background-size: cover;
     background-position: center;
+}
+.music-header{
+    font-size: 60px;
+    font-weight: 600;
+    cursor: default;
 }
