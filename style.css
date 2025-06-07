@@ -55,7 +55,7 @@ nav ul li a:hover::after{
     width: 100%;
     height: 100vh;
     /* background-image: url(images/background_upscaled.jpg); */
-    background-image: url(images/xav.gif);
+    background-image: url(images/bg4.gif);
     background-size: cover;
     background-attachment: fixed;
     background-position: center;
@@ -64,11 +64,7 @@ nav ul li a:hover::after{
     width: 700px;
     margin-top: 10%;
     font-size: 60px;
-    transition: 0.2s ease-in-out;
     cursor: default;
-}
-.header-text:hover{
-    font-size: 62px;
 }
 .header-text span{ 
     font-size: 75px;
@@ -78,11 +74,7 @@ nav ul li a:hover::after{
 .header-text2{
     width: 400px;
     font-size: 30px;
-    transition: 0.2s ease-in-out;
     cursor: default;
-}
-.header-text2:hover{
-    font-size: 31px;
 }
 
 /* -------- icons -------- */
@@ -122,9 +114,7 @@ nav ul li a:hover::after{
 #about{
     padding: 80px 0;
     color: #ffffff;
-    background-image: url(images/bg2.gif);
     background-size: cover;
-    background-attachment: fixed;
     background-position: center;
 }
 .row{
@@ -197,16 +187,11 @@ nav ul li a:hover::after{
     margin: 10px 0; 
     color: white;
     font-size: 30px;
-    transition: all 0.3s ease-in-out;
     cursor: default;
 }
 .stackItems li img{
     width: 50px;
     height: auto;
-    transition: all 0.3s ease-in-out;
-}
-.stackItems li:hover{
-    transform: scale(1.25);
 }
 
 /* -------- experience -------- */
@@ -227,37 +212,7 @@ nav ul li a:hover::after{
 }
 
 /* -------- experience drop-down -------- */
-.qa-dropdown{
-    position: relative;
-    display: inline-block;
-}
-.qa-dropdown button{
-    background-color: #3498db00;
-    color: white;
-    padding: 5px;
-    border: none;
-    cursor: pointer;
-}
-.qa-dropdown-content{
-    display: none;
-    position: absolute;
-    background-color: rgba(255, 255, 255, 0);
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    min-width: 160px;
-    z-index: 1
-}
-.qa-dropdown-content ul li{
-    display: block;
-    padding: 2px; 
-    text-decoration: none;
-    margin-bottom: 5px;
-}
-.qa-dropdown-content ul li:hover{
-    background-color: #dddddd00;
-}
-.show {
-    display: block;
-}
+
 
 /* -------- education -------- */
 .macLogo{
@@ -287,12 +242,25 @@ nav ul li a:hover::after{
 #projects{
     padding: 80px 0;
     color: #ffffff;
-    background-image: url(images/bg3.gif);
+    background-image: url(images/bg4.gif);
     background-size: cover;
     background-attachment: fixed;
     background-position: center;
 }
 .project-header{
+    font-size: 60px;
+    font-weight: 600;
+    cursor: default;
+}
+
+/* ----------------------- experience ----------------------- */
+#experience{
+    padding: 80px 0;
+    color: #ffffff;
+    background-size: cover;
+    background-position: center;
+}
+.experience-header{
     font-size: 60px;
     font-weight: 600;
     cursor: default;
