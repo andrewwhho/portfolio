@@ -1,163 +1,172 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ANDREW PORTFOLIO</title>
-    <link rel="stylesheet" href="style.css">
-</head>
+    <link rel="stylesheet" href="style.css" />
+  </head>
 
-<body>
+  <body>
     <div id="header">
-        <div class="container">
-            <nav>
-                <ul>
-                    <li><a href="#header">Home</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#projects">Projects</a></li>
-                    <li><a href="#experience">Experience</a></li>
-                    <li><a href="#music">Music</a></li>
-                </ul>
-            </nav>
-            <div class="header-text">
-                <p>my name is <span>Andrew.</span></p>
-            </div>
-            <div class="header-text2">
-                <p>welcome to my Portfolio</p>
-            </div>
-            <div class="icons">
-                <ul>
-                    <li><a title="GitHub" href="https://github.com/andrewwhho" target="_blank"><img
-                                src="icons/github.png" alt="GitHub"></a></li>
-                    <li><a title="LinkedIn" href="https://www.linkedin.com/in/andrewwhho/" target="_blank"><img
-                                src="icons/linkedin.png" alt="LinkedIn"></a></li>
-                    <li><a title="SoundCloud" href="https://soundcloud.com/1bboy" target="_blank"><img
-                                src="icons/soundcloud.png" alt="SoundCloud"></a>
-                    </li>
-                    <li><a title="Download Resume" href=""><img src="icons/resume.png" alt="Resume"></a></li>
-                    <li><a title="Contact me" href=""><img src="icons/mail.png" alt="Resume"></a></li>
-                </ul>
-            </div>
-            <div>
-                <!-- <audio class="player" controls loop>
+      <div class="container">
+        <nav>
+          <ul>
+            <li><a href="#header">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#experience">Experience</a></li>
+          </ul>
+        </nav>
+        <div class="header-text">
+          <p>my name is <span>Andrew.</span></p>
+        </div>
+        <div class="header-text2">
+          <p>welcome to my Portfolio</p>
+        </div>
+        <div class="icons">
+          <ul>
+            <li>
+              <a
+                title="GitHub"
+                href="https://github.com/andrewwhho"
+                target="_blank"
+                ><img src="icons/github.png" alt="GitHub"
+              /></a>
+            </li>
+            <li>
+              <a
+                title="LinkedIn"
+                href="https://www.linkedin.com/in/andrewwhho/"
+                target="_blank"
+                ><img src="icons/linkedin.png" alt="LinkedIn"
+              /></a>
+            </li>
+            <li>
+              <a title="Download Resume" href=""
+                ><img src="icons/resume.png" alt="Resume"
+              /></a>
+            </li>
+            <li>
+              <a title="Contact me" href=""
+                ><img src="icons/mail.png" alt="Resume"
+              /></a>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <!-- <audio class="player" controls loop>
                     <source src="music/XCLUSIVE.mp3" type="audio/mp3">
                 </audio> -->
-            </div>
         </div>
+      </div>
     </div>
     <!-- ----------------------- about ----------------------- -->
     <div id="about">
-        <div class="container">
-            <div class="row">
-                <div class="about-col-1">
-                    <img src="images/PBS.jpg" title="NOT ME!!!!">
-                </div>
-                <div class="about-col-2">
-                    <h1 class="sub-title">About</h1>
-                    <p> 5th year of Math & CS student at McMaster University. </p>
+      <div class="container">
+        <div class="row">
+          <div class="about-col-1">
+            <img src="images/PBS.jpg" title="NOT ME!!!!" />
+          </div>
+          <div class="about-col-2">
+            <h1 class="sub-title">About</h1>
+            <p>5th year of Math & CS student at McMaster University.</p>
 
-                    <div class="tab-titles">
-                        <p class="tab-links active-link" onclick="opentab(event, 'skills')">Skills/Stack</p>
-                        <p class="tab-links" onclick="opentab(event, 'experience')">Experience</p>
-                        <p class="tab-links" onclick="opentab(event, 'education')">Education</p>
-                    </div>
-                    <div class="tab-contents active-tab" id="skills">
-                        <ul class="stackItems">
-                            <li><span><img src="icons/stackIcons/java.png"></span>Java</li>
-                            <li><span><img src="icons/stackIcons/python.png"></span>Python</li>
-                            <li><span><img src="icons/stackIcons/spring.png"></span>Spring</li>
-                            <li><span><img src="icons/stackIcons/html.png"></span>HTML</li>
-                            <li><span><img src="icons/stackIcons/css-3.png"></span>CSS</li>
-                            <li><span><img src="icons/stackIcons/java-script.png"></span>JavaScript</li>
-                            <li><span><img src="icons/stackIcons/atom.png"></span>React</li>
-                            <li><span><img src="icons/stackIcons/git.png"></span>Git</li>
-                        </ul>
-                    </div>
-                    <div class="tab-contents" id="experience">
-                        <ul class="experienceItems">
-                            <li>
-                                <img src="icons/scotia.png" class="scotiaLogo">
-                                <span>
-                                    Sept 2024 - Apr 2025<br>
-                                    <span class="qa-header"> Quality Assurance Engineer at Scotiabank</span> <br>
-                                    <div class="qa-details">
-                                        <ul>
-                                            <li>
-                                                Service-level and end-to-end QA testing for the Loyalty Services Layer, focusing on REST APIs in a microservices-based architecture
-                                            </li>
-                                            <li>
-                                                Mapped and validated service and data flows across Spring Cloud components deployed in Azure to ensure correct microservice orchestration and data integrity.
-                                            </li>
-                                            <li>
-                                                Led QA efforts for a successful JDK Spring Boot upgrade, ensuring backward compatibility and minimal downtime
-                                            </li>
-                                            <li>
-                                                Tested and validated a high-priority hotfix for duplicate transaction issues, reducing critical errors in production
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </span>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="tab-contents" id="education">
-                        <ul class="educationItems">
-                            <li>
-                                <img src="icons/macLogo.png" class="macLogo">
-                                <span>
-                                    Sept 2021 - Present<br>
-                                    <span class="school-header"> Honours Mathematics & Computer Science at McMaster University</span> <br>
-                                </span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+            <div class="tab-titles">
+              <p
+                class="tab-links active-link"
+                onclick="opentab(event, 'skills')"
+              >
+                Skills/Stack
+              </p>
+              <p class="tab-links" onclick="opentab(event, 'education')">
+                Education
+              </p>
             </div>
+            <div class="tab-contents active-tab" id="skills">
+              <ul class="stackItems">
+                <li>
+                  <span><img src="icons/stackIcons/java.png" /></span>Java
+                </li>
+                <li>
+                  <span><img src="icons/stackIcons/python.png" /></span>Python
+                </li>
+                <li>
+                  <span><img src="icons/stackIcons/spring.png" /></span>Spring
+                </li>
+                <li>
+                  <span><img src="icons/stackIcons/html.png" /></span>HTML
+                </li>
+                <li>
+                  <span><img src="icons/stackIcons/css-3.png" /></span>CSS
+                </li>
+                <li>
+                  <span><img src="icons/stackIcons/java-script.png" /></span
+                  >JavaScript
+                </li>
+                <li>
+                  <span><img src="icons/stackIcons/atom.png" /></span>React
+                </li>
+                <li>
+                  <span><img src="icons/stackIcons/git.png" /></span>Git
+                </li>
+              </ul>
+            </div>
+            <div class="tab-contents" id="education">
+              <ul class="educationItems">
+                <li>
+                  <img src="icons/macLogo.png" class="macLogo" />
+                  <span>
+                    Sept 2021 - Present<br />
+                    <span class="school-header">
+                      Honours Mathematics & Computer Science at McMaster
+                      University</span
+                    >
+                    <br />
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
     <!-- ----------------------- projects ----------------------- -->
     <div id="projects">
-        <div class="container">
-            <div class="rows">
-                <div class="projects-col-1">
-                    <h1 class="project-header">Projects</h1>
-                </div>
-                <div class="projects-col-2">
-
-                </div>
-            </div>
+      <div class="container">
+        <div class="project-rows">
+          <h1 class="project-header">Projects</h1>
+          <div class="projects-col-1">
+            <p>DailyQuest</p>
+            <br />
+            <img src="images/DQ1.png" class="DQ-logo" />
+          </div>
+          <div class="projects-col-2">
+            DailyQuest is a habit-tracking app designed to help users build
+            and maintain positive routines. It features an AI-powered
+            suggestion model that analyzes user behavior and provides
+            personalized recommendations to optimize daily habits. Whether it's
+            fitness, mindfulness, or productivity, DailyQuest keeps users
+            motivated with insightful prompts, progress tracking, and tailored
+            guidance. With a sleek interface and smart habit analytics, it’s the
+            perfect companion for anyone striving for consistency and
+            self-improvement.
         </div>
+      </div>
     </div>
 
-        <!-- ----------------------- experience ----------------------- -->
+    <!-- ----------------------- experience ----------------------- -->
     <div id="experience">
-        <div class="container">
-            <div class="rows">
-                <div class="experience-col-1">
-                    <h1 class="experience-header">Experience</h1>
-                </div>
-                <div class="experience-col-2">
-
-                </div>
-            </div>
+      <div class="container">
+        <div class="rows">
+          <div class="experience-col-1">
+            <h1 class="experience-header">Experience</h1>
+          </div>
+          <div class="experience-col-2"></div>
         </div>
+      </div>
     </div>
 
-    <!-- ----------------------- music ----------------------- -->
-
-    <div id="music">
-        <div class="container">
-            <div class="rows">
-                <div class="music-col-1">
-                </div>
-                <div class="music-col-2">
-                    <h1 class="music-header"> Music </h1>
-                </div>
-            </div>
-        </div>
-    </div>
     <script src="index.js"></script>
-</body>
-
+  </body>
 </html>
