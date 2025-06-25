@@ -76,6 +76,16 @@ nav ul li a:hover::after{
     font-size: 35px;
     cursor: default;
 }
+.location{
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.location img{
+    width: 25px;
+    height: auto;
+}
 
 /* -------- icons -------- */
 .icons img{
