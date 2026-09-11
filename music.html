@@ -34,46 +34,20 @@
     <!-- ----------------------- music section ----------------------- -->
     <section class="music-page-section" id="music">
       <div class="container">
-        <!-- Section Header -->
-        <h1 class="section-title">Listening History<span>.</span></h1>
-        <p class="section-subtitle">
-          Real-time music activity, top artists, albums, and tracks scrobbled
-          via Last.fm
-        </p>
-
-        <!-- User Stats & Profile Card -->
-        <div class="music-user-card">
-          <div class="user-card-left">
-            <div class="user-avatar-wrap">
-              <svg
-                viewBox="0 0 24 24"
-                width="28"
-                height="28"
-                fill="currentColor"
-              >
-                <path
-                  d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"
-                />
-              </svg>
-              <div
-                class="user-status-ping"
-                title="Live scrobbling active"
-              ></div>
-            </div>
-            <div class="user-info-text">
-              <h3>
-                <span id="displayUsername">uniqlothug</span>
-                <span class="user-account-badge">Last.fm</span>
-              </h3>
-              <p class="user-sub-status">
-                <span>● Connected to Last.fm</span>
-              </p>
+        <!-- Compact Hero Header -->
+        <div class="music-compact-header">
+          <div class="music-title-wrap">
+            <h1 class="music-title">Listening History<span>.</span></h1>
+            <div class="music-user-pill">
+              <span class="user-live-dot" title="Live scrobbling active"></span>
+              <span id="displayUsername">uniqlothug</span>
+              <span class="user-badge-tag">Last.fm</span>
             </div>
           </div>
 
-          <div class="user-card-actions">
+          <div class="music-header-actions">
             <a
-              class="music-btn music-btn-primary"
+              class="music-btn-profile"
               id="lfmProfileBtn"
               href="https://www.last.fm/user/uniqlothug"
               target="_blank"
@@ -84,178 +58,165 @@
           </div>
         </div>
 
-        <!-- Filter & Control Panel -->
-        <div class="music-controls-panel">
-          <!-- Time Period Tabs -->
-          <div class="music-tabs" role="tablist" aria-label="Time period">
+        <!-- Integrated Toolbar (Category, Period & View) -->
+        <div class="music-toolbar">
+          <!-- Category Tabs: Overview, Artists, Albums, Tracks -->
+          <div
+            class="music-cat-tabs"
+            role="tablist"
+            aria-label="Music category"
+          >
             <button
-              class="music-tab active"
-              data-period="7day"
+              class="cat-tab active"
+              data-cat="all"
               role="tab"
               aria-selected="true"
             >
-              7 Days
+              Overview
             </button>
             <button
-              class="music-tab"
-              data-period="1month"
+              class="cat-tab"
+              data-cat="artists"
               role="tab"
               aria-selected="false"
             >
-              1 Month
+              Top Artists
             </button>
             <button
-              class="music-tab"
-              data-period="12month"
+              class="cat-tab"
+              data-cat="albums"
               role="tab"
               aria-selected="false"
             >
-              1 Year
+              Top Albums
             </button>
             <button
-              class="music-tab"
-              data-period="overall"
+              class="cat-tab"
+              data-cat="tracks"
               role="tab"
               aria-selected="false"
             >
-              All Time
+              Tracks
             </button>
           </div>
 
-          <!-- View Mode Toggle -->
-          <div class="view-pill-group" role="group" aria-label="View layout">
-            <button
-              class="view-pill-btn active"
-              data-view="grid"
-              aria-pressed="true"
+          <!-- Right: Period Selector & View Toggle -->
+          <div class="music-toolbar-right">
+            <div
+              class="toolbar-pill-group"
+              role="group"
+              aria-label="Time period"
             >
-              <svg
-                viewBox="0 0 24 24"
-                width="13"
-                height="13"
-                fill="currentColor"
+              <button
+                class="period-pill active"
+                data-period="7day"
+                aria-pressed="true"
               >
-                <rect x="3" y="3" width="7" height="7" rx="1" />
-                <rect x="14" y="3" width="7" height="7" rx="1" />
-                <rect x="3" y="14" width="7" height="7" rx="1" />
-                <rect x="14" y="14" width="7" height="7" rx="1" />
-              </svg>
-              Grid
-            </button>
-            <button
-              class="view-pill-btn"
-              data-view="chart"
-              aria-pressed="false"
-            >
-              <svg
-                viewBox="0 0 24 24"
-                width="13"
-                height="13"
-                fill="currentColor"
+                7D
+              </button>
+              <button
+                class="period-pill"
+                data-period="1month"
+                aria-pressed="false"
               >
-                <rect x="4" y="10" width="3" height="10" rx="1" />
-                <rect x="10.5" y="5" width="3" height="15" rx="1" />
-                <rect x="17" y="2" width="3" height="18" rx="1" />
-              </svg>
-              Chart
-            </button>
-          </div>
-        </div>
-
-        <!-- Section: Top Artists -->
-        <div class="music-sub-heading">
-          <h2 class="music-sub-title">Top Artists</h2>
-        </div>
-        <div id="artists-container">
-          <div class="music-cards-grid" id="artists-grid">
-            <!-- Populated dynamically / skeletons -->
-          </div>
-        </div>
-
-        <!-- Section: Top Albums -->
-        <div class="music-sub-heading">
-          <h2 class="music-sub-title">Top Albums</h2>
-        </div>
-        <div id="albums-container">
-          <div class="music-cards-grid" id="albums-grid">
-            <!-- Populated dynamically / skeletons -->
-          </div>
-        </div>
-
-        <!-- Dual Column: Top Tracks & Recent Scrobbles -->
-        <div class="tracks-dual-layout">
-          <!-- Left: Top Tracks -->
-          <div class="tracks-panel-card">
-            <div class="tracks-panel-header">
-              <span class="tracks-panel-title">
-                <svg
-                  viewBox="0 0 24 24"
-                  width="16"
-                  height="16"
-                  fill="currentColor"
-                >
-                  <path
-                    d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"
-                  />
-                </svg>
-                Top Tracks
-              </span>
-              <span class="music-play-tag" id="topTracksCount">Top 10</span>
-            </div>
-            <div id="top-tracks-list">
-              <!-- Populated dynamically -->
-            </div>
-          </div>
-
-          <!-- Right: Recent Tracks -->
-          <div class="tracks-panel-card">
-            <div class="tracks-panel-header">
-              <span class="tracks-panel-title">
-                <svg
-                  viewBox="0 0 24 24"
-                  width="16"
-                  height="16"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <circle cx="12" cy="12" r="10" />
-                  <polyline points="12 6 12 12 16 14" />
-                </svg>
-                Recent Scrobbles
-              </span>
-              <span class="music-play-tag">Live Activity</span>
-            </div>
-            <div id="recent-tracks-list">
-              <!-- Populated dynamically -->
-            </div>
-          </div>
-        </div>
-
-        <!-- Interactive Audio Visualizer Dock -->
-        <div class="music-visualizer-dock">
-          <div class="dock-header">
-            <span class="dock-title">
-              <svg
-                viewBox="0 0 24 24"
-                width="14"
-                height="14"
-                fill="currentColor"
+                1M
+              </button>
+              <button
+                class="period-pill"
+                data-period="12month"
+                aria-pressed="false"
               >
-                <rect x="2" y="9" width="2" height="6" rx="1" />
-                <rect x="6" y="5" width="2" height="14" rx="1" />
-                <rect x="10" y="2" width="2" height="20" rx="1" />
-                <rect x="14" y="6" width="2" height="12" rx="1" />
-                <rect x="18" y="8" width="2" height="8" rx="1" />
-                <rect x="22" y="10" width="2" height="4" rx="1" />
-              </svg>
-              Audio Waveform Visualizer
-            </span>
-            <span class="dock-hint">Move cursor or click to interact</span>
+                1Y
+              </button>
+              <button
+                class="period-pill"
+                data-period="overall"
+                aria-pressed="false"
+              >
+                All
+              </button>
+            </div>
+
+            <div class="toolbar-pill-group" role="group" aria-label="View mode">
+              <button
+                class="view-pill active"
+                data-view="grid"
+                aria-pressed="true"
+                title="Grid layout"
+              >
+                ⊞ Grid
+              </button>
+              <button
+                class="view-pill"
+                data-view="chart"
+                aria-pressed="false"
+                title="Chart layout"
+              >
+                📊 Chart
+              </button>
+            </div>
           </div>
-          <div class="wave-wrap" id="waveWrap">
-            <canvas class="wave-viz" id="waveViz" aria-hidden="true"></canvas>
+        </div>
+
+        <!-- Content Area -->
+        <div class="music-content-area">
+          <!-- Section: Top Artists -->
+          <div class="music-section-block" id="block-artists">
+            <div class="block-header">
+              <h2 class="block-title">Top Artists</h2>
+              <span class="block-count" id="artistsCount">Top 10</span>
+            </div>
+            <div id="artists-container">
+              <div class="music-cards-grid" id="artists-grid">
+                <!-- Skeletons populated by JS -->
+              </div>
+            </div>
           </div>
+
+          <!-- Section: Top Albums -->
+          <div class="music-section-block" id="block-albums">
+            <div class="block-header">
+              <h2 class="block-title">Top Albums</h2>
+              <span class="block-count" id="albumsCount">Top 10</span>
+            </div>
+            <div id="albums-container">
+              <div class="music-cards-grid" id="albums-grid">
+                <!-- Skeletons populated by JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Section: Tracks Dual Panel (Top Tracks & Recent Scrobbles) -->
+          <div class="music-section-block" id="block-tracks">
+            <div class="tracks-dual-layout">
+              <!-- Left: Top Tracks -->
+              <div class="tracks-panel-card">
+                <div class="tracks-panel-header">
+                  <span class="tracks-panel-title">Top Tracks</span>
+                  <span class="block-count">Top 10</span>
+                </div>
+                <div id="top-tracks-list">
+                  <!-- Skeletons populated by JS -->
+                </div>
+              </div>
+
+              <!-- Right: Recent Scrobbles -->
+              <div class="tracks-panel-card">
+                <div class="tracks-panel-header">
+                  <span class="tracks-panel-title">Recent Scrobbles</span>
+                  <span class="block-count">Live</span>
+                </div>
+                <div id="recent-tracks-list">
+                  <!-- Skeletons populated by JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ambient Interactive Waveform Bar -->
+        <div class="music-ambient-wave" id="waveWrap">
+          <canvas class="wave-viz" id="waveViz" aria-hidden="true"></canvas>
         </div>
       </div>
     </section>

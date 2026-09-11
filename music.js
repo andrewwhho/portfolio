@@ -2,11 +2,12 @@
    ANDREW HO - MUSIC PAGE LOGIC (music.js)
    Aesthetic Theme: Fits Andrew's Portfolio exactly
    Features:
+   - Category filtering (Overview, Top Artists, Top Albums, Tracks)
+   - Zero unnecessary scrolling: compact responsive layout
    - Official Last.fm 2.0 REST API integration
-   - Top Artists & Albums in Frosted Glass Cards (Grid) or Ranked Progress Bars (Chart)
-   - Dual-panel layout for Top Tracks & Recent Scrobbles with live animated equalizer
-   - Interactive mouse-reactive Audio Waveform Canvas Visualizer dock
-   - Client-side caching and dynamic username switching
+   - Grid and Chart views
+   - Live scrobbles with animated equalizer wave
+   - Interactive mouse-reactive waveform dock
    ------------------------------------------------------------- */
 
 (function () {
@@ -14,7 +15,7 @@
 
   // --- Configuration ---
   const LASTFM_CONFIG = {
-    defaultUser: 'uniqlothug',
+    defaultUser: 'yungtract0r', // Set your Last.fm username here
     apiKey: 'ca45675f32551c9ad5ca5c334993b165',
     apiBase: 'https://ws.audioscrobbler.com/2.0/',
     periodCacheTTL: 3600 * 1000,   // 1 hour
@@ -22,6 +23,7 @@
   };
 
   // --- State ---
+  let currentCategory = 'all';
   let currentPeriod = '7day';
   let currentView = 'grid';
   let currentUsername = getActiveUsername();
@@ -73,7 +75,7 @@
     });
   }
 
-  // --- Cache with Expiration ---
+  // --- LocalStorage Cache ---
   function getCache(key, maxAge) {
     try {
       const raw = localStorage.getItem(key);
@@ -99,7 +101,7 @@
     } catch (_) {}
   }
 
-  // --- Last.fm API Fetcher ---
+  // --- Last.fm API Client ---
   async function fetchLastFm(params) {
     const url = new URL(LASTFM_CONFIG.apiBase);
     url.searchParams.set('format', 'json');
@@ -189,7 +191,7 @@
     }));
   }
 
-  // 4. Fetch Recent Scrobbles
+  // 4. Fetch Recent Tracks
   async function getRecentTracks() {
     const data = await fetchLastFm({
       method: 'user.getrecenttracks',
@@ -214,18 +216,14 @@
     const skeletonCard = '<div class="music-skeleton-card"></div>';
     const skeletonRow = '<div class="music-skeleton-row"></div>';
 
-    const artistsContainer = document.getElementById('artists-container');
-    const albumsContainer = document.getElementById('albums-container');
+    const artistsGrid = document.getElementById('artists-grid');
+    const albumsGrid = document.getElementById('albums-grid');
     const topTracksList = document.getElementById('top-tracks-list');
 
-    if (artistsContainer) {
-      artistsContainer.innerHTML = `<div class="music-cards-grid">${skeletonCard.repeat(10)}</div>`;
-    }
-    if (albumsContainer) {
-      albumsContainer.innerHTML = `<div class="music-cards-grid">${skeletonCard.repeat(10)}</div>`;
-    }
+    if (artistsGrid) artistsGrid.innerHTML = skeletonCard.repeat(5);
+    if (albumsGrid) albumsGrid.innerHTML = skeletonCard.repeat(5);
     if (topTracksList) {
-      topTracksList.innerHTML = `<div style="display:flex;flex-direction:column;gap:8px;">${skeletonRow.repeat(8)}</div>`;
+      topTracksList.innerHTML = `<div style="display:flex;flex-direction:column;gap:6px;">${skeletonRow.repeat(5)}</div>`;
     }
   }
 
@@ -247,7 +245,7 @@
     if (!container) return;
 
     if (!artists || artists.length === 0) {
-      container.innerHTML = '<p class="user-sub-status">No artist data available for this period.</p>';
+      container.innerHTML = '<p style="color:var(--text-muted);font-size:13px;padding:12px 0;">No artist data available for this period.</p>';
       return;
     }
 
@@ -286,7 +284,7 @@
     if (!container) return;
 
     if (!albums || albums.length === 0) {
-      container.innerHTML = '<p class="user-sub-status">No album data available for this period.</p>';
+      container.innerHTML = '<p style="color:var(--text-muted);font-size:13px;padding:12px 0;">No album data available for this period.</p>';
       return;
     }
 
@@ -318,13 +316,13 @@
     container.innerHTML = `<div class="music-cards-grid">${cardsHtml}</div>`;
   }
 
-  // --- Render Chart View (Horizontal Progress Bars) ---
+  // --- Render Chart View (Horizontal Bars) ---
   function renderChartView(containerId, items, artworkMap = null, isArtist = false) {
     const container = document.getElementById(containerId);
     if (!container) return;
 
     if (!items || items.length === 0) {
-      container.innerHTML = '<p class="user-sub-status">No data available for chart view.</p>';
+      container.innerHTML = '<p style="color:var(--text-muted);font-size:13px;padding:12px 0;">No data available for chart view.</p>';
       return;
     }
 
@@ -337,7 +335,7 @@
         const imgUrl = item.imageUrl || (artworkMap && artworkMap.get(item.name?.toLowerCase())) || null;
         const thumbMarkup = imgUrl
           ? `<img src="${escapeHtml(imgUrl)}" alt="" loading="lazy" />`
-          : `<div class="music-card-placeholder" style="font-size:16px;">♫</div>`;
+          : `<div class="music-card-placeholder" style="font-size:14px;">♫</div>`;
 
         const subtitle = isArtist ? 'Artist' : (item.artist || '');
 
@@ -369,7 +367,7 @@
     if (!list) return;
 
     if (!tracks || tracks.length === 0) {
-      list.innerHTML = '<p class="user-sub-status">No top tracks available for this period.</p>';
+      list.innerHTML = '<p style="color:var(--text-muted);font-size:13px;padding:8px 0;">No top tracks available for this period.</p>';
       return;
     }
 
@@ -398,7 +396,7 @@
     if (!list) return;
 
     if (!tracks || tracks.length === 0) {
-      list.innerHTML = '<p class="user-sub-status">No recent tracks available.</p>';
+      list.innerHTML = '<p style="color:var(--text-muted);font-size:13px;padding:8px 0;">No recent tracks available.</p>';
       return;
     }
 
@@ -432,6 +430,33 @@
         `;
       })
       .join('');
+  }
+
+  // --- Category Filter Visibility ---
+  function updateCategoryVisibility() {
+    const blockArtists = document.getElementById('block-artists');
+    const blockAlbums = document.getElementById('block-albums');
+    const blockTracks = document.getElementById('block-tracks');
+
+    if (!blockArtists || !blockAlbums || !blockTracks) return;
+
+    if (currentCategory === 'all') {
+      blockArtists.classList.remove('hidden');
+      blockAlbums.classList.remove('hidden');
+      blockTracks.classList.remove('hidden');
+    } else if (currentCategory === 'artists') {
+      blockArtists.classList.remove('hidden');
+      blockAlbums.classList.add('hidden');
+      blockTracks.classList.add('hidden');
+    } else if (currentCategory === 'albums') {
+      blockArtists.classList.add('hidden');
+      blockAlbums.classList.remove('hidden');
+      blockTracks.classList.add('hidden');
+    } else if (currentCategory === 'tracks') {
+      blockArtists.classList.add('hidden');
+      blockAlbums.classList.add('hidden');
+      blockTracks.classList.remove('hidden');
+    }
   }
 
   // --- Load and Display Period Data ---
@@ -489,7 +514,7 @@
       console.error('Error loading recent tracks:', err);
       const list = document.getElementById('recent-tracks-list');
       if (list) {
-        list.innerHTML = '<p class="user-sub-status">Recent tracks temporarily unavailable.</p>';
+        list.innerHTML = '<p style="color:var(--text-muted);font-size:13px;padding:8px 0;">Recent tracks temporarily unavailable.</p>';
       }
     }
   }
@@ -507,6 +532,7 @@
     }
 
     renderTopTracks(cachedData.topTracks);
+    updateCategoryVisibility();
   }
 
   // --- UI Bindings ---
@@ -514,48 +540,66 @@
     // 1. Profile Info & Links
     const displayUsernameEl = document.getElementById('displayUsername');
     const lfmProfileBtn = document.getElementById('lfmProfileBtn');
-    if (displayUsernameEl) displayUsernameEl.textContent = `@${currentUsername}`;
+    if (displayUsernameEl) displayUsernameEl.textContent = currentUsername;
     if (lfmProfileBtn) {
       lfmProfileBtn.href = `https://www.last.fm/user/${encodeURIComponent(currentUsername)}`;
     }
 
-    // 2. Period Tabs
-    const periodTabs = document.querySelectorAll('.music-tab');
-    periodTabs.forEach(tab => {
+    // 2. Category Tabs (Overview, Top Artists, Top Albums, Tracks)
+    const catTabs = document.querySelectorAll('.cat-tab');
+    catTabs.forEach(tab => {
       tab.addEventListener('click', () => {
-        const period = tab.getAttribute('data-period');
-        if (period === currentPeriod) return;
+        const cat = tab.getAttribute('data-cat');
+        if (cat === currentCategory) return;
 
-        currentPeriod = period;
-        periodTabs.forEach(t => {
+        currentCategory = cat;
+        catTabs.forEach(t => {
           const isActive = t === tab;
           t.classList.toggle('active', isActive);
           t.setAttribute('aria-selected', String(isActive));
+        });
+
+        updateCategoryVisibility();
+      });
+    });
+
+    // 3. Period Pills (7D, 1M, 1Y, All)
+    const periodPills = document.querySelectorAll('.period-pill');
+    periodPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        const period = pill.getAttribute('data-period');
+        if (period === currentPeriod) return;
+
+        currentPeriod = period;
+        periodPills.forEach(p => {
+          const isActive = p === pill;
+          p.classList.toggle('active', isActive);
+          p.setAttribute('aria-pressed', String(isActive));
         });
 
         loadPeriodData(currentPeriod);
       });
     });
 
-    // 3. View Mode Toggle Pills (Grid vs Chart)
-    const viewButtons = document.querySelectorAll('.view-pill-btn');
-    viewButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const view = btn.getAttribute('data-view');
+    // 4. View Mode Pills (Grid vs Chart)
+    const viewPills = document.querySelectorAll('.view-pill');
+    viewPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        const view = pill.getAttribute('data-view');
         if (view === currentView) return;
 
         currentView = view;
-        viewButtons.forEach(b => {
-          const isActive = b === btn;
-          b.classList.toggle('active', isActive);
-          b.setAttribute('aria-pressed', String(isActive));
+        viewPills.forEach(p => {
+          const isActive = p === pill;
+          p.classList.toggle('active', isActive);
+          p.setAttribute('aria-pressed', String(isActive));
         });
 
         renderActiveView();
       });
     });
 
-    // 4. Mobile Navbar Drawer Toggle
+    // 5. Mobile Navbar Drawer Toggle
     const navToggle = document.getElementById('navToggle');
     const navLinks = document.getElementById('navLinks');
     if (navToggle && navLinks) {
@@ -573,7 +617,7 @@
     }
   }
 
-  // --- Interactive Audio Wave Visualizer ---
+  // --- Ambient Interactive Waveform Visualizer ---
   function initAudioWaveVisualizer() {
     const canvas = document.getElementById('waveViz');
     const wrap = document.getElementById('waveWrap');
@@ -584,7 +628,7 @@
 
     const step = 6;
     const barWidth = 2;
-    const minHeight = 4;
+    const minHeight = 3;
 
     let width = 0;
     let height = 0;
