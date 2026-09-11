@@ -1,159 +1,638 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ANDREW PORTFOLIO</title>
+    <title>Andrew Ho | Portfolio</title>
     <link rel="stylesheet" href="style.css" />
   </head>
 
   <body>
-    <div id="header">
+    <!-- ----------------------- navigation ----------------------- -->
+    <header id="header">
       <div class="container">
-        <nav>
-          <ul>
+        <nav id="navbar">
+          <a href="#header" class="nav-logo">AH<span>.</span></a>
+          <ul class="nav-links" id="navLinks">
             <li><a href="#header">Home</a></li>
             <li><a href="#about">About</a></li>
             <li><a href="#projects">Projects</a></li>
             <li><a href="#experience">Experience</a></li>
+            <li><a href="#contact">Contact</a></li>
           </ul>
+          <div class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
         </nav>
-        <div class="header-text">
-          <p>my name is <span>Andrew.</span></p>
-        </div>
-        <div class="location"> <img src="icons/pin.png">Toronto, ON</div>
-        <div class="header-text2">
-          <p>welcome to my Portfolio</p>
-        </div>
-        <div class="icons">
-          <ul>
-            <li>
-              <a
-                title="GitHub"
-                href="https://github.com/andrewwhho"
-                target="_blank"
-                ><img src="icons/github.png" alt="GitHub"
-              /></a>
-            </li>
-            <li>
-              <a
-                title="LinkedIn"
-                href="https://www.linkedin.com/in/andrewwhho/"
-                target="_blank"
-                ><img src="icons/linkedin.png" alt="LinkedIn"
-              /></a>
-            </li>
-            <li>
-              <a title="Download Resume" href=""
-                ><img src="icons/resume.png" alt="Resume"
-              /></a>
-            </li>
-            <li>
-              <a title="Contact me" href=""
-                ><img src="icons/mail.png" alt="Resume"
-              /></a>
-            </li>
-          </ul>
-        </div>
-        <div>
-          <!-- <audio class="player" controls loop>
-                    <source src="music/XCLUSIVE.mp3" type="audio/mp3">
-                </audio> -->
+
+        <div class="header-content">
+          <div class="header-text">
+            <p>my name is <span>Andrew.</span></p>
+          </div>
+          <div class="location">
+            <img src="icons/pin.png" alt="Location" />Toronto, ON
+          </div>
+          <div class="header-text2">
+            <p>welcome to my Portfolio</p>
+          </div>
+
+          <div class="icons">
+            <ul>
+              <li>
+                <a
+                  title="GitHub"
+                  href="https://github.com/andrewwhho"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  ><img src="icons/github.png" alt="GitHub"
+                /></a>
+              </li>
+              <li>
+                <a
+                  title="LinkedIn"
+                  href="https://www.linkedin.com/in/andrewwhho/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  ><img src="icons/linkedin.png" alt="LinkedIn"
+                /></a>
+              </li>
+              <li>
+                <a
+                  title="SoundCloud"
+                  href="https://soundcloud.com/1bboy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  ><img src="icons/soundcloud.png" alt="SoundCloud"
+                /></a>
+              </li>
+              <li>
+                <a title="Email Me" href="mailto:andrewwhho@gmail.com"
+                  ><img src="icons/mail.png" alt="Email"
+                /></a>
+              </li>
+              <li>
+                <a title="Contact &amp; Resume" id="resumeBtn" href="#contact"
+                  ><img src="icons/resume.png" alt="Resume"
+                /></a>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
-    </div>
-    <!-- ----------------------- about ----------------------- -->
-    <div id="about">
-      <div class="container">
-        <h1 class="about-header">About Me</h1>
-        <div class="about-row">
-          <!-- <div class="about-col">
-            <img src="images/PBS.jpg" title="NOT ME!!!!" />
-          </div> -->
-          <div class="about-col">
+    </header>
 
-            <div class="about-para">
-              Hey there! I'm Andrew, a fifth-year Honours Mathematics and Computer Science major at McMaster University.
-              My studies focus on proof-based calculus, linear algebra, and core computer science concepts like data structures,
-              algorithms, complexity, and software development principles. <br>
-              <br>
-              Currently, I'm exploring full-stack technologies such as Spring Boot, React.js, TypeScript, and TailwindCSS
-              while working on <a href="#DailyQuest">DailyQuest</a>, a collaborative project. I love connecting with like-minded individuals,
-              so feel free to reach out on <a href="https://www.linkedin.com/in/andrewwhho/" target="_blank">LinkedIn!</a> <br>
-              <br>
-              Tech stack: 
-              <div class="tech-stack">
-                <ul class="stack-list">
-                  <li><img src="icons/stackIcons/atom.png">React</li>
-                  <li><img src="icons/stackIcons/css-3.png">CSS</li>
-                  <li><img src="icons/stackIcons/git.png">Git</li>
-                  <li><img src="icons/stackIcons/html.png">HTML</li>
-                  <li><img src="icons/stackIcons/java-script.png">JavaScript</li>
-                  <li><img src="icons/stackIcons/java.png">Java</li>
-                  <li><img src="icons/stackIcons/python.png">Python</li>
-                  <li><img src="icons/stackIcons/spring.png">Spring</li>
-                </ul>
+    <!-- ----------------------- about ----------------------- -->
+    <section id="about">
+      <div class="container">
+        <h1 class="section-title">About Me</h1>
+        <div class="about-row">
+          <!-- Left Visual Aesthetic Card -->
+          <div class="about-col-left">
+            <div class="aesthetic-card">
+              <div class="aesthetic-media">
+                <img
+                  src="images/484858259_18014097473705501_8788955211200007586_n.jpg"
+                  alt="Aesthetic CRT Display"
+                  class="about-img"
+                />
+                <div class="aesthetic-overlay"></div>
               </div>
-              <br>
-              Beyond coding, I'm a big NBA fan and love playing basketball
-              (I have a nasty stepback so I dare you try and guard me). I also enjoy gaming - Counter-Strike,
-              Escape from Tarkov, and Rocket League are some favorites. Music and film are also a huge part of my life.
-              Some artists I enjoy include Yung Lean, A$AP Rocky, and Yves Tumor, and some film classics I enjoy are The Godfather,
-              Good Will Hunting, and Mulholland Drive (RIP David Lynch). <br>
-              <br>
-              Creativity drives me, whether in coding, music production, or audio engineering,
-              I’m always open to new ideas and collaborations. <br>
-              <br>
-              Let’s connect and build something great!
+              <div class="aesthetic-info">
+                <div class="info-pill">
+                  <span class="pill-dot"></span>
+                  <span>Honours Math &amp; CS @ McMaster</span>
+                </div>
+                <div class="info-details">
+                  <p><strong>Class:</strong> 5th Year (Grad 2026)</p>
+                  <p><strong>Interests:</strong> Full-Stack, Systems, Audio</p>
+                  <p><strong>Status:</strong> Open to new opportunities</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Text & Stack -->
+          <div class="about-col-right">
+            <div class="about-para">
+              <p>
+                Hey there! I'm Andrew, a fifth-year Honours Mathematics and
+                Computer Science major at McMaster University. My studies focus
+                on proof-based calculus, linear algebra, and core computer
+                science concepts like data structures, algorithms, complexity,
+                and software development principles.
+              </p>
+              <br />
+              <p>
+                Currently, I'm exploring full-stack technologies such as Spring
+                Boot, React.js, TypeScript, and TailwindCSS while working on
+                <a href="#projects">DailyQuest</a>, a collaborative project. I
+                love connecting with like-minded individuals, so feel free to
+                reach out on
+                <a
+                  href="https://www.linkedin.com/in/andrewwhho/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >LinkedIn!</a
+                >
+              </p>
+            </div>
+
+            <!-- Tech Stack Showcase -->
+            <div class="tech-stack-container">
+              <h3 class="stack-heading">Tech Stack</h3>
+              <ul class="stack-grid">
+                <li class="stack-item">
+                  <img src="icons/stackIcons/atom.png" alt="React" /><span
+                    >React</span
+                  >
+                </li>
+                <li class="stack-item">
+                  <img src="icons/stackIcons/spring.png" alt="Spring" /><span
+                    >Spring Boot</span
+                  >
+                </li>
+                <li class="stack-item">
+                  <img src="icons/stackIcons/java.png" alt="Java" /><span
+                    >Java</span
+                  >
+                </li>
+                <li class="stack-item">
+                  <img src="icons/stackIcons/python.png" alt="Python" /><span
+                    >Python</span
+                  >
+                </li>
+                <li class="stack-item">
+                  <img
+                    src="icons/stackIcons/java-script.png"
+                    alt="JavaScript"
+                  /><span>JavaScript</span>
+                </li>
+                <li class="stack-item">
+                  <img src="icons/stackIcons/html.png" alt="HTML5" /><span
+                    >HTML5</span
+                  >
+                </li>
+                <li class="stack-item">
+                  <img src="icons/stackIcons/css-3.png" alt="CSS3" /><span
+                    >CSS3</span
+                  >
+                </li>
+                <li class="stack-item">
+                  <img src="icons/stackIcons/git.png" alt="Git" /><span
+                    >Git</span
+                  >
+                </li>
+              </ul>
+            </div>
+
+            <div class="about-para about-hobbies">
+              <p>
+                Beyond coding, I like Basketball (playing and watching), playing
+                guitar. I also enjoy gaming &mdash; Counter-Strike, Escape from
+                Tarkov, and Rocket League are some favorites. Music and film are
+                also a huge part of my life. Some artists I enjoy include Yung
+                Lean, A$AP Rocky, and Yves Tumor, and some film classics I enjoy
+                are The Godfather, Good Will Hunting, and Mulholland Drive (RIP
+                David Lynch).
+              </p>
+              <br />
+              <p>
+                Creativity drives me, whether in coding, music production, or
+                audio engineering. I’m always open to new ideas and
+                collaborations &mdash; let’s connect and build something great!
+              </p>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
+
     <!-- ----------------------- projects ----------------------- -->
-    <div id="projects">
+    <section id="projects">
       <div class="container">
-        <h1 class="project-header">Projects</h1>
-        <div class="project-rows">
-          <div class="projects-col-1">
-            <p id="DailyQuest">DailyQuest</p>
-            <br />
-            <img src="images/DQ1.png" class="DQ-logo" />
+        <h1 class="section-title">Projects</h1>
+        <p class="section-subtitle">Selected work and software projects</p>
+
+        <div class="project-grid">
+          <!-- Featured Project: DailyQuest -->
+          <div class="project-card featured" id="DailyQuest">
+            <div class="project-image-wrapper">
+              <img
+                src="images/DQ1.png"
+                alt="DailyQuest Preview"
+                class="project-img"
+              />
+              <div class="project-badge">Featured Project</div>
+            </div>
+            <div class="project-info">
+              <div class="project-header-row">
+                <h2 class="project-title">DailyQuest</h2>
+                <div class="project-links">
+                  <a
+                    href="https://github.com/andrewwhho/DailyQuest"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="project-link-btn"
+                    title="View Source Code"
+                  >
+                    <img src="icons/github.png" alt="GitHub" /> Code
+                  </a>
+                </div>
+              </div>
+              <p class="project-tagline">
+                AI-Powered Routine &amp; Habit Optimization Application
+              </p>
+              <p class="project-desc">
+                DailyQuest is a habit-tracking platform designed to help users
+                build and maintain positive routines. It features an AI-powered
+                suggestion model that analyzes user behavioral patterns and
+                provides personalized recommendations to optimize daily
+                routines. Whether it's fitness, mindfulness, or productivity,
+                DailyQuest keeps users motivated with insightful prompts,
+                progress analytics, and tailored guidance.
+              </p>
+              <div class="project-tags">
+                <span>Spring Boot</span>
+                <span>React.js</span>
+                <span>TypeScript</span>
+                <span>TailwindCSS</span>
+                <span>REST APIs</span>
+                <span>AI Models</span>
+              </div>
+            </div>
           </div>
-          <div class="projects-col-2">
-            DailyQuest is a habit-tracking app designed to help users build
-            and maintain positive routines. It features an AI-powered
-            suggestion model that analyzes user behavior and provides
-            personalized recommendations to optimize daily habits. Whether it's
-            fitness, mindfulness, or productivity, DailyQuest keeps users
-            motivated with insightful prompts, progress tracking, and tailored
-            guidance. With a sleek interface and smart habit analytics, it’s the
-            perfect companion for anyone striving for consistency and
-            self-improvement.
+
+          <!-- Project 2: Boggle Game & Solver -->
+          <div class="project-card">
+            <div class="project-info">
+              <div class="project-header-row">
+                <h2 class="project-title">Boggle Game &amp; Solver</h2>
+                <div class="project-links">
+                  <a
+                    href="https://github.com/andrewwhho/BoggleGame"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="project-link-btn"
+                    title="View Source Code"
+                  >
+                    <img src="icons/github.png" alt="GitHub" /> Code
+                  </a>
+                </div>
+              </div>
+              <p class="project-tagline">
+                Algorithmic Word Search Engine &amp; Interactive Board Game
+              </p>
+              <p class="project-desc">
+                An interactive desktop implementation of the classic Boggle word
+                game. Built with an optimized recursive backtracking search
+                algorithm integrated with a lexicon dictionary structure to
+                discover all valid board solutions in milliseconds.
+              </p>
+              <div class="project-tags">
+                <span>Java</span>
+                <span>Algorithms</span>
+                <span>Data Structures</span>
+                <span>Recursion</span>
+                <span>GUI</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Project 3: Task Orchestrator -->
+          <div class="project-card">
+            <div class="project-info">
+              <div class="project-header-row">
+                <h2 class="project-title">TaskList Orchestrator</h2>
+                <div class="project-links">
+                  <a
+                    href="https://github.com/andrewwhho/TaskList"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="project-link-btn"
+                    title="View Source Code"
+                  >
+                    <img src="icons/github.png" alt="GitHub" /> Code
+                  </a>
+                </div>
+              </div>
+              <p class="project-tagline">
+                Task Management &amp; Workflow Scheduling Service
+              </p>
+              <p class="project-desc">
+                Full-stack productivity tool engineered to manage workflows,
+                priority queuing, and deadline tracking. Designed with a robust
+                Spring backend architecture, clean relational schema, and a
+                responsive interface.
+              </p>
+              <div class="project-tags">
+                <span>Spring Boot</span>
+                <span>Java</span>
+                <span>REST API</span>
+                <span>JavaScript</span>
+                <span>CSS3</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- ----------------------- experience ----------------------- -->
-    <div id="experience">
+    <!-- ----------------------- experience & education ----------------------- -->
+    <section id="experience">
       <div class="container">
-        <h1 class="experience-header">Experience</h1>
-        <div class="rows">
-          <div class="experience-col">
-            Scotiabank QA Engineer 
+        <h1 class="section-title">Experience &amp; Education</h1>
+        <p class="section-subtitle">
+          My professional journey and academic background
+        </p>
+
+        <!-- Tab Controls -->
+        <div class="tab-titles">
+          <button
+            class="tab-links active-link"
+            type="button"
+            onclick="opentab(event, 'work-exp')"
+          >
+            Work Experience
+          </button>
+          <button
+            class="tab-links"
+            type="button"
+            onclick="opentab(event, 'education-exp')"
+          >
+            Education
+          </button>
+        </div>
+
+        <!-- Work Experience Tab Content -->
+        <div class="tab-contents active-tab" id="work-exp">
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <div class="timeline-logo-wrap">
+                <img
+                  src="icons/scotia.png"
+                  alt="Scotiabank Logo"
+                  class="org-logo"
+                />
+              </div>
+              <div class="timeline-meta">
+                <div class="timeline-role-row">
+                  <h2 class="timeline-role">Quality Assurance Engineer</h2>
+                  <span class="timeline-date">Sept 2024 &ndash; Apr 2025</span>
+                </div>
+                <h3 class="timeline-org">
+                  Scotiabank &bull; Loyalty Services Layer
+                </h3>
+                <span class="timeline-loc">Toronto, ON</span>
+              </div>
+            </div>
+
+            <div class="qa-dropdown">
+              <button type="button" class="qa-dropdown-toggle">
+                <span>Key Responsibilities &amp; Highlights</span>
+                <span class="dropdown-arrow">&#9662;</span>
+              </button>
+              <div class="qa-dropdown-content show">
+                <ul class="exp-bullet-list">
+                  <li>
+                    Conducted service-level and end-to-end QA testing for the
+                    Loyalty Services Layer, focusing on high-throughput REST
+                    APIs within a distributed microservices architecture.
+                  </li>
+                  <li>
+                    Mapped and validated service and data flows across Spring
+                    Cloud components deployed in Azure to guarantee correct
+                    microservice orchestration, resilience, and data integrity.
+                  </li>
+                  <li>
+                    Led QA efforts for a major JDK and Spring Boot framework
+                    upgrade, verifying backward compatibility, system stability,
+                    and minimal downtime across dependencies.
+                  </li>
+                  <li>
+                    Tested and validated a high-priority hotfix addressing
+                    duplicate transaction issues, reducing critical errors in
+                    production and enhancing transactional consistency.
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="exp-tags">
+              <span>Spring Boot</span>
+              <span>Spring Cloud</span>
+              <span>Azure</span>
+              <span>REST APIs</span>
+              <span>Microservices</span>
+              <span>QA &amp; Automation</span>
+            </div>
           </div>
-          <div class="experience-col"></div>
+        </div>
+
+        <!-- Education Tab Content -->
+        <div class="tab-contents" id="education-exp">
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <div class="timeline-logo-wrap">
+                <img
+                  src="icons/macLogo.png"
+                  alt="McMaster University Logo"
+                  class="org-logo mac"
+                />
+              </div>
+              <div class="timeline-meta">
+                <div class="timeline-role-row">
+                  <h2 class="timeline-role">
+                    Honours Mathematics &amp; Computer Science
+                  </h2>
+                  <span class="timeline-date"
+                    >Sept 2021 &ndash; Present (Expected 2026)</span
+                  >
+                </div>
+                <h3 class="timeline-org">McMaster University</h3>
+                <span class="timeline-loc">Hamilton, ON</span>
+              </div>
+            </div>
+
+            <div class="timeline-body">
+              <ul class="exp-bullet-list">
+                <li>
+                  Concentrated coursework in proof-based calculus, linear
+                  algebra, discrete mathematics, and abstract mathematical
+                  foundations.
+                </li>
+                <li>
+                  Comprehensive study of core computer science foundations: data
+                  structures, algorithm design &amp; asymptotic analysis,
+                  automata &amp; complexity theory, and software development
+                  principles.
+                </li>
+                <li>
+                  Active involvement in collaborative engineering projects,
+                  applying full-stack design patterns, clean code principles,
+                  and modern version control workflows.
+                </li>
+              </ul>
+            </div>
+
+            <div class="exp-tags">
+              <span>Data Structures</span>
+              <span>Algorithms</span>
+              <span>Linear Algebra</span>
+              <span>Proof-Based Calculus</span>
+              <span>Software Engineering</span>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
 
+    <!-- ----------------------- contact ----------------------- -->
+    <section id="contact">
+      <div class="container">
+        <h1 class="section-title">Let's Connect</h1>
+        <p class="section-subtitle">
+          Feel free to reach out for opportunities, collaborations, or just to
+          say hi
+        </p>
+
+        <div class="contact-wrapper">
+          <div class="contact-grid">
+            <div class="contact-card">
+              <div class="contact-icon-wrap">
+                <img src="icons/mail.png" alt="Email" />
+              </div>
+              <h3>Email</h3>
+              <p>andrewwhho@gmail.com</p>
+              <div class="contact-card-actions">
+                <button
+                  type="button"
+                  class="btn-copy-email"
+                  id="copyEmailBtn"
+                  data-email="andrewwhho@gmail.com"
+                >
+                  Copy Email
+                </button>
+                <a href="mailto:andrewwhho@gmail.com" class="btn-direct-link"
+                  >Write Message</a
+                >
+              </div>
+            </div>
+
+            <div class="contact-card">
+              <div class="contact-icon-wrap">
+                <img src="icons/linkedin.png" alt="LinkedIn" />
+              </div>
+              <h3>LinkedIn</h3>
+              <p>/in/andrewwhho</p>
+              <div class="contact-card-actions">
+                <a
+                  href="https://www.linkedin.com/in/andrewwhho/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="btn-direct-link"
+                  >Connect</a
+                >
+              </div>
+            </div>
+
+            <div class="contact-card">
+              <div class="contact-icon-wrap">
+                <img src="icons/github.png" alt="GitHub" />
+              </div>
+              <h3>GitHub</h3>
+              <p>/andrewwhho</p>
+              <div class="contact-card-actions">
+                <a
+                  href="https://github.com/andrewwhho"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="btn-direct-link"
+                  >Follow</a
+                >
+              </div>
+            </div>
+
+            <div class="contact-card">
+              <div class="contact-icon-wrap">
+                <img src="icons/soundcloud.png" alt="SoundCloud" />
+              </div>
+              <h3>SoundCloud</h3>
+              <p>/1bboy</p>
+              <div class="contact-card-actions">
+                <a
+                  href="https://soundcloud.com/1bboy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="btn-direct-link"
+                  >Listen</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ----------------------- footer ----------------------- -->
     <footer class="footer">
-      <div>
+      <div class="container footer-content">
+        <div class="footer-left">
+          <p>&copy; 2025 Andrew Ho. All Rights Reserved.</p>
+          <span class="footer-sub">Built with code &amp; beats</span>
+        </div>
+        <div class="footer-right">
+          <a href="#header" class="back-to-top" title="Back to top">
+            &uarr; Top
+          </a>
+        </div>
       </div>
-      <span>
-        © 2025 Andrew Ho. All Rights Reserved.
-      </span>
     </footer>
+
+    <!-- ----------------------- floating audio player ----------------------- -->
+    <div class="player-widget" id="musicPlayer">
+      <audio id="audioElement" loop preload="none">
+        <source src="music/XCLUSIVE.mp3" type="audio/mpeg" />
+        <source src="music/268 200bpm prod bboy.wav" type="audio/wav" />
+        Your browser does not support the audio element.
+      </audio>
+      <button
+        type="button"
+        id="playPauseBtn"
+        class="player-control-btn"
+        aria-label="Play/Pause music"
+      >
+        <svg class="play-icon" viewBox="0 0 24 24" width="18" height="18">
+          <polygon points="5,3 19,12 5,21" fill="currentColor" />
+        </svg>
+        <svg
+          class="pause-icon"
+          viewBox="0 0 24 24"
+          width="18"
+          height="18"
+          style="display: none"
+        >
+          <rect x="6" y="4" width="4" height="16" fill="currentColor" />
+          <rect x="14" y="4" width="4" height="16" fill="currentColor" />
+        </svg>
+      </button>
+
+      <div class="player-details">
+        <span class="player-track">XCLUSIVE</span>
+        <span class="player-artist">prod. bboy</span>
+      </div>
+
+      <div class="visualizer" id="audioVisualizer" aria-hidden="true">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
+    </div>
+
+    <!-- Toast notification for copied text -->
+    <div id="toast" class="toast" role="alert" aria-live="polite"></div>
 
     <script src="index.js"></script>
   </body>
