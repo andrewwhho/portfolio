@@ -123,11 +123,13 @@ nav ul.nav-links li a::after {
     transition: width 0.3s ease;
 }
 
-nav ul.nav-links li a:hover {
+nav ul.nav-links li a:hover,
+nav ul.nav-links li a.active {
     color: #ffffff;
 }
 
-nav ul.nav-links li a:hover::after {
+nav ul.nav-links li a:hover::after,
+nav ul.nav-links li a.active::after {
     width: 100%;
 }
 

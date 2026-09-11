@@ -1,0 +1,695 @@
+/* -------------------------------------------------------------
+   ANDREW HO - MUSIC PAGE LOGIC (music.js)
+   Aesthetic Theme: Fits Andrew's Portfolio exactly
+   Features:
+   - Official Last.fm 2.0 REST API integration
+   - Top Artists & Albums in Frosted Glass Cards (Grid) or Ranked Progress Bars (Chart)
+   - Dual-panel layout for Top Tracks & Recent Scrobbles with live animated equalizer
+   - Interactive mouse-reactive Audio Waveform Canvas Visualizer dock
+   - Client-side caching and dynamic username switching
+   ------------------------------------------------------------- */
+
+(function () {
+  'use strict';
+
+  // --- Configuration ---
+  const LASTFM_CONFIG = {
+    defaultUser: 'uniqlothug',
+    apiKey: 'ca45675f32551c9ad5ca5c334993b165',
+    apiBase: 'https://ws.audioscrobbler.com/2.0/',
+    periodCacheTTL: 3600 * 1000,   // 1 hour
+    tracksCacheTTL: 180 * 1000,    // 3 minutes
+  };
+
+  // --- State ---
+  let currentPeriod = '7day';
+  let currentView = 'grid';
+  let currentUsername = getActiveUsername();
+  let cachedData = {
+    artists: [],
+    albums: [],
+    topTracks: [],
+  };
+
+  // --- Helper Functions ---
+  function getActiveUsername() {
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const queryUser = urlParams.get('user');
+      if (queryUser) return queryUser.trim();
+      return localStorage.getItem('lastfm_user') || LASTFM_CONFIG.defaultUser;
+    } catch (_) {
+      return LASTFM_CONFIG.defaultUser;
+    }
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function formatPlays(count) {
+    const num = Number(count) || 0;
+    return `${num.toLocaleString()} ${num === 1 ? 'play' : 'plays'}`;
+  }
+
+  function formatTimeAgo(seconds) {
+    if (!seconds) return 'Just now';
+    const now = Math.floor(Date.now() / 1000);
+    const diff = Math.max(0, now - seconds);
+
+    if (diff < 60) return 'Just now';
+    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+    if (diff < 604800) return `${Math.floor(diff / 86400)}d ago`;
+    return new Date(seconds * 1000).toLocaleDateString(undefined, {
+      month: 'short',
+      day: 'numeric',
+    });
+  }
+
+  // --- Cache with Expiration ---
+  function getCache(key, maxAge) {
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (!parsed || !parsed.timestamp || !parsed.payload) return null;
+      if (Date.now() - parsed.timestamp > maxAge) return null;
+      return parsed.payload;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function setCache(key, payload) {
+    try {
+      localStorage.setItem(
+        key,
+        JSON.stringify({
+          timestamp: Date.now(),
+          payload: payload,
+        })
+      );
+    } catch (_) {}
+  }
+
+  // --- Last.fm API Fetcher ---
+  async function fetchLastFm(params) {
+    const url = new URL(LASTFM_CONFIG.apiBase);
+    url.searchParams.set('format', 'json');
+    url.searchParams.set('api_key', LASTFM_CONFIG.apiKey);
+    url.searchParams.set('user', currentUsername);
+
+    for (const [k, v] of Object.entries(params)) {
+      url.searchParams.set(k, v);
+    }
+
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 8500);
+
+    try {
+      const res = await fetch(url.toString(), { signal: controller.signal });
+      if (!res.ok) {
+        throw new Error(`Last.fm returned HTTP ${res.status}`);
+      }
+      return await res.json();
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  // 1. Fetch Top Artists
+  async function getTopArtists(period) {
+    const data = await fetchLastFm({
+      method: 'user.gettopartists',
+      period: period,
+      limit: '10',
+    });
+
+    const artists = data?.topartists?.artist || [];
+    return artists.map(a => ({
+      name: a.name || 'Unknown Artist',
+      playcount: Number(a.playcount) || 0,
+      url: a.url || `https://www.last.fm/music/${encodeURIComponent(a.name || '')}`,
+      imageUrl: null,
+    }));
+  }
+
+  // 2. Fetch Top Albums
+  async function getTopAlbums(period) {
+    const data = await fetchLastFm({
+      method: 'user.gettopalbums',
+      period: period,
+      limit: '10',
+    });
+
+    const albums = data?.topalbums?.album || [];
+    return albums.map(a => {
+      let img = null;
+      if (Array.isArray(a.image)) {
+        const found =
+          a.image.find(i => i.size === 'extralarge') ||
+          a.image.find(i => i.size === 'large') ||
+          a.image.find(i => i.size === 'medium');
+        if (found && found['#text'] && !found['#text'].includes('2a96cbd8b46e442fc41c2b86b821562f')) {
+          img = found['#text'];
+        }
+      }
+
+      return {
+        name: a.name || 'Unknown Album',
+        artist: (typeof a.artist === 'object' ? a.artist?.name : a.artist) || '',
+        playcount: Number(a.playcount) || 0,
+        url: a.url || `https://www.last.fm/music/${encodeURIComponent(a.name || '')}`,
+        imageUrl: img,
+      };
+    });
+  }
+
+  // 3. Fetch Top Tracks
+  async function getTopTracks(period) {
+    const data = await fetchLastFm({
+      method: 'user.gettoptracks',
+      period: period,
+      limit: '10',
+    });
+
+    const tracks = data?.toptracks?.track || [];
+    return tracks.map(t => ({
+      name: t.name || 'Unknown Track',
+      artist: (typeof t.artist === 'object' ? t.artist?.name : t.artist) || '',
+      playcount: Number(t.playcount) || 0,
+      url: t.url || `https://www.last.fm/music/${encodeURIComponent(t.artist?.name || '')}/_/${encodeURIComponent(t.name || '')}`,
+    }));
+  }
+
+  // 4. Fetch Recent Scrobbles
+  async function getRecentTracks() {
+    const data = await fetchLastFm({
+      method: 'user.getrecenttracks',
+      limit: '10',
+    });
+
+    const tracks = data?.recenttracks?.track || [];
+    return tracks.map(t => {
+      const isNowPlaying = t['@attr'] && t['@attr'].nowplaying === 'true';
+      return {
+        name: t.name || 'Unknown Track',
+        artist: (typeof t.artist === 'object' ? t.artist['#text'] : t.artist) || '',
+        url: t.url || '',
+        timestamp: isNowPlaying ? null : (t.date?.uts ? Number(t.date.uts) : null),
+        isNowPlaying: isNowPlaying,
+      };
+    });
+  }
+
+  // --- Skeletons ---
+  function renderSkeletons() {
+    const skeletonCard = '<div class="music-skeleton-card"></div>';
+    const skeletonRow = '<div class="music-skeleton-row"></div>';
+
+    const artistsContainer = document.getElementById('artists-container');
+    const albumsContainer = document.getElementById('albums-container');
+    const topTracksList = document.getElementById('top-tracks-list');
+
+    if (artistsContainer) {
+      artistsContainer.innerHTML = `<div class="music-cards-grid">${skeletonCard.repeat(10)}</div>`;
+    }
+    if (albumsContainer) {
+      albumsContainer.innerHTML = `<div class="music-cards-grid">${skeletonCard.repeat(10)}</div>`;
+    }
+    if (topTracksList) {
+      topTracksList.innerHTML = `<div style="display:flex;flex-direction:column;gap:8px;">${skeletonRow.repeat(8)}</div>`;
+    }
+  }
+
+  // --- Artist-to-Album Artwork Mapper ---
+  function getArtistArtworkMap(albums) {
+    const map = new Map();
+    if (!Array.isArray(albums)) return map;
+    for (const a of albums) {
+      if (a.artist && a.imageUrl && !map.has(a.artist.toLowerCase())) {
+        map.set(a.artist.toLowerCase(), a.imageUrl);
+      }
+    }
+    return map;
+  }
+
+  // --- Render Artists (Grid View) ---
+  function renderArtistsGrid(artists, artworkMap) {
+    const container = document.getElementById('artists-container');
+    if (!container) return;
+
+    if (!artists || artists.length === 0) {
+      container.innerHTML = '<p class="user-sub-status">No artist data available for this period.</p>';
+      return;
+    }
+
+    const cardsHtml = artists
+      .map((artist, idx) => {
+        const rank = String(idx + 1).padStart(2, '0');
+        const imgUrl = artist.imageUrl || artworkMap.get(artist.name?.toLowerCase()) || null;
+        const imgMarkup = imgUrl
+          ? `<img src="${escapeHtml(imgUrl)}" alt="${escapeHtml(artist.name)}" loading="lazy" decoding="async" />`
+          : `<div class="music-card-placeholder">♫</div>`;
+
+        return `
+          <a href="${escapeHtml(artist.url)}" target="_blank" rel="noopener noreferrer" class="music-card">
+            <div class="music-card-img-wrap">
+              ${imgMarkup}
+              <span class="music-rank-badge">#${rank}</span>
+            </div>
+            <div class="music-card-info">
+              <span class="music-card-title">${escapeHtml(artist.name)}</span>
+              <span class="music-card-subtitle">Artist</span>
+              <div class="music-card-footer">
+                <span class="music-play-tag">${formatPlays(artist.playcount)}</span>
+              </div>
+            </div>
+          </a>
+        `;
+      })
+      .join('');
+
+    container.innerHTML = `<div class="music-cards-grid">${cardsHtml}</div>`;
+  }
+
+  // --- Render Albums (Grid View) ---
+  function renderAlbumsGrid(albums) {
+    const container = document.getElementById('albums-container');
+    if (!container) return;
+
+    if (!albums || albums.length === 0) {
+      container.innerHTML = '<p class="user-sub-status">No album data available for this period.</p>';
+      return;
+    }
+
+    const cardsHtml = albums
+      .map((album, idx) => {
+        const rank = String(idx + 1).padStart(2, '0');
+        const imgMarkup = album.imageUrl
+          ? `<img src="${escapeHtml(album.imageUrl)}" alt="${escapeHtml(album.name)}" loading="lazy" decoding="async" />`
+          : `<div class="music-card-placeholder">♫</div>`;
+
+        return `
+          <a href="${escapeHtml(album.url)}" target="_blank" rel="noopener noreferrer" class="music-card">
+            <div class="music-card-img-wrap">
+              ${imgMarkup}
+              <span class="music-rank-badge">#${rank}</span>
+            </div>
+            <div class="music-card-info">
+              <span class="music-card-title">${escapeHtml(album.name)}</span>
+              <span class="music-card-subtitle">${escapeHtml(album.artist)}</span>
+              <div class="music-card-footer">
+                <span class="music-play-tag">${formatPlays(album.playcount)}</span>
+              </div>
+            </div>
+          </a>
+        `;
+      })
+      .join('');
+
+    container.innerHTML = `<div class="music-cards-grid">${cardsHtml}</div>`;
+  }
+
+  // --- Render Chart View (Horizontal Progress Bars) ---
+  function renderChartView(containerId, items, artworkMap = null, isArtist = false) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    if (!items || items.length === 0) {
+      container.innerHTML = '<p class="user-sub-status">No data available for chart view.</p>';
+      return;
+    }
+
+    const maxPlays = Math.max(...items.map(i => i.playcount), 1);
+
+    const rowsHtml = items
+      .map((item, idx) => {
+        const rank = String(idx + 1).padStart(2, '0');
+        const percent = Math.max(5, Math.round((item.playcount / maxPlays) * 100));
+        const imgUrl = item.imageUrl || (artworkMap && artworkMap.get(item.name?.toLowerCase())) || null;
+        const thumbMarkup = imgUrl
+          ? `<img src="${escapeHtml(imgUrl)}" alt="" loading="lazy" />`
+          : `<div class="music-card-placeholder" style="font-size:16px;">♫</div>`;
+
+        const subtitle = isArtist ? 'Artist' : (item.artist || '');
+
+        return `
+          <div class="chart-row">
+            <span class="chart-rank">#${rank}</span>
+            <div class="chart-thumb">
+              ${thumbMarkup}
+            </div>
+            <div class="chart-details">
+              <div class="chart-title">${escapeHtml(item.name)}</div>
+              <div class="chart-artist">${escapeHtml(subtitle)}</div>
+            </div>
+            <div class="chart-bar-track">
+              <div class="chart-bar-fill" style="width: ${percent}%;"></div>
+            </div>
+            <span class="chart-count">${item.playcount.toLocaleString()} plays</span>
+          </div>
+        `;
+      })
+      .join('');
+
+    container.innerHTML = `<div class="music-chart-container">${rowsHtml}</div>`;
+  }
+
+  // --- Render Top Tracks ---
+  function renderTopTracks(tracks) {
+    const list = document.getElementById('top-tracks-list');
+    if (!list) return;
+
+    if (!tracks || tracks.length === 0) {
+      list.innerHTML = '<p class="user-sub-status">No top tracks available for this period.</p>';
+      return;
+    }
+
+    list.innerHTML = tracks
+      .map((track, idx) => {
+        const rank = String(idx + 1).padStart(2, '0');
+        return `
+          <a href="${escapeHtml(track.url)}" target="_blank" rel="noopener noreferrer" class="track-row">
+            <div class="track-row-left">
+              <span class="track-index">${rank}</span>
+              <div class="track-text-group">
+                <span class="track-name">${escapeHtml(track.name)}</span>
+                <span class="track-artist">${escapeHtml(track.artist)}</span>
+              </div>
+            </div>
+            <span class="track-meta">${formatPlays(track.playcount)}</span>
+          </a>
+        `;
+      })
+      .join('');
+  }
+
+  // --- Render Recent Scrobbles ---
+  function renderRecentTracks(tracks) {
+    const list = document.getElementById('recent-tracks-list');
+    if (!list) return;
+
+    if (!tracks || tracks.length === 0) {
+      list.innerHTML = '<p class="user-sub-status">No recent tracks available.</p>';
+      return;
+    }
+
+    list.innerHTML = tracks
+      .map((track, idx) => {
+        const rank = String(idx + 1).padStart(2, '0');
+        const liveWave = `
+          <div class="live-equalizer" role="img" aria-label="Now playing" title="Scrobbling now">
+            <span class="eq-bar"></span>
+            <span class="eq-bar"></span>
+            <span class="eq-bar"></span>
+            <span class="eq-bar"></span>
+          </div>
+        `;
+
+        const meta = track.timestamp === null || track.isNowPlaying
+          ? liveWave
+          : `<span class="track-meta">${formatTimeAgo(track.timestamp)}</span>`;
+
+        return `
+          <a href="${escapeHtml(track.url)}" target="_blank" rel="noopener noreferrer" class="track-row">
+            <div class="track-row-left">
+              <span class="track-index">${rank}</span>
+              <div class="track-text-group">
+                <span class="track-name">${escapeHtml(track.name)}</span>
+                <span class="track-artist">${escapeHtml(track.artist)}</span>
+              </div>
+            </div>
+            ${meta}
+          </a>
+        `;
+      })
+      .join('');
+  }
+
+  // --- Load and Display Period Data ---
+  async function loadPeriodData(period, skipCache = false) {
+    const cacheKey = `lastfm_${currentUsername}_period_${period}`;
+    let data = !skipCache ? getCache(cacheKey, LASTFM_CONFIG.periodCacheTTL) : null;
+
+    if (data) {
+      cachedData = data;
+      renderActiveView();
+      return;
+    }
+
+    renderSkeletons();
+
+    try {
+      const [artistsRes, albumsRes, tracksRes] = await Promise.allSettled([
+        getTopArtists(period),
+        getTopAlbums(period),
+        getTopTracks(period),
+      ]);
+
+      const artists = artistsRes.status === 'fulfilled' ? artistsRes.value : [];
+      const albums = albumsRes.status === 'fulfilled' ? albumsRes.value : [];
+      const tracks = tracksRes.status === 'fulfilled' ? tracksRes.value : [];
+
+      cachedData = {
+        artists: artists,
+        albums: albums,
+        topTracks: tracks,
+      };
+
+      setCache(cacheKey, cachedData);
+      renderActiveView();
+    } catch (err) {
+      console.error('Error loading Last.fm period data:', err);
+    }
+  }
+
+  // --- Load Recent Tracks ---
+  async function loadRecentTracks(skipCache = false) {
+    const cacheKey = `lastfm_${currentUsername}_recent_tracks`;
+    let data = !skipCache ? getCache(cacheKey, LASTFM_CONFIG.tracksCacheTTL) : null;
+
+    if (data) {
+      renderRecentTracks(data);
+      return;
+    }
+
+    try {
+      const tracks = await getRecentTracks();
+      setCache(cacheKey, tracks);
+      renderRecentTracks(tracks);
+    } catch (err) {
+      console.error('Error loading recent tracks:', err);
+      const list = document.getElementById('recent-tracks-list');
+      if (list) {
+        list.innerHTML = '<p class="user-sub-status">Recent tracks temporarily unavailable.</p>';
+      }
+    }
+  }
+
+  // --- Render Active View ---
+  function renderActiveView() {
+    const artworkMap = getArtistArtworkMap(cachedData.albums);
+
+    if (currentView === 'chart') {
+      renderChartView('artists-container', cachedData.artists, artworkMap, true);
+      renderChartView('albums-container', cachedData.albums, null, false);
+    } else {
+      renderArtistsGrid(cachedData.artists, artworkMap);
+      renderAlbumsGrid(cachedData.albums);
+    }
+
+    renderTopTracks(cachedData.topTracks);
+  }
+
+  // --- UI Bindings ---
+  function setupUIBindings() {
+    // 1. Profile Info & Links
+    const displayUsernameEl = document.getElementById('displayUsername');
+    const lfmProfileBtn = document.getElementById('lfmProfileBtn');
+    if (displayUsernameEl) displayUsernameEl.textContent = `@${currentUsername}`;
+    if (lfmProfileBtn) {
+      lfmProfileBtn.href = `https://www.last.fm/user/${encodeURIComponent(currentUsername)}`;
+    }
+
+    // 2. Period Tabs
+    const periodTabs = document.querySelectorAll('.music-tab');
+    periodTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const period = tab.getAttribute('data-period');
+        if (period === currentPeriod) return;
+
+        currentPeriod = period;
+        periodTabs.forEach(t => {
+          const isActive = t === tab;
+          t.classList.toggle('active', isActive);
+          t.setAttribute('aria-selected', String(isActive));
+        });
+
+        loadPeriodData(currentPeriod);
+      });
+    });
+
+    // 3. View Mode Toggle Pills (Grid vs Chart)
+    const viewButtons = document.querySelectorAll('.view-pill-btn');
+    viewButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const view = btn.getAttribute('data-view');
+        if (view === currentView) return;
+
+        currentView = view;
+        viewButtons.forEach(b => {
+          const isActive = b === btn;
+          b.classList.toggle('active', isActive);
+          b.setAttribute('aria-pressed', String(isActive));
+        });
+
+        renderActiveView();
+      });
+    });
+
+    // 4. Mobile Navbar Drawer Toggle
+    const navToggle = document.getElementById('navToggle');
+    const navLinks = document.getElementById('navLinks');
+    if (navToggle && navLinks) {
+      navToggle.addEventListener('click', () => {
+        navToggle.classList.toggle('open');
+        navLinks.classList.toggle('show-menu');
+      });
+
+      navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          navToggle.classList.remove('open');
+          navLinks.classList.remove('show-menu');
+        });
+      });
+    }
+  }
+
+  // --- Interactive Audio Wave Visualizer ---
+  function initAudioWaveVisualizer() {
+    const canvas = document.getElementById('waveViz');
+    const wrap = document.getElementById('waveWrap');
+    if (!canvas || !wrap) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const step = 6;
+    const barWidth = 2;
+    const minHeight = 4;
+
+    let width = 0;
+    let height = 0;
+    let mouseX = -1;
+    let mouseActive = 0;
+    let targetMouseActive = 0;
+    let ripples = [];
+
+    function resize() {
+      const dpr = window.devicePixelRatio || 1;
+      const rect = wrap.getBoundingClientRect();
+      width = rect.width;
+      height = rect.height;
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function addRipple(x) {
+      if (ripples.length > 5) ripples.shift();
+      ripples.push({
+        x: x,
+        age: 0,
+        amp: 1.0,
+      });
+    }
+
+    function render(timestamp) {
+      const time = timestamp * 0.0014;
+      ctx.clearRect(0, 0, width, height);
+
+      mouseActive += (targetMouseActive - mouseActive) * 0.08;
+
+      for (let i = ripples.length - 1; i >= 0; i--) {
+        const r = ripples[i];
+        r.age += 0.035;
+        r.amp *= 0.96;
+        if (r.amp < 0.01) {
+          ripples.splice(i, 1);
+        }
+      }
+
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+
+      const totalBars = Math.floor(width / step);
+      for (let i = 0; i < totalBars; i++) {
+        const x = i * step;
+        const norm = i / totalBars;
+
+        let wave =
+          Math.sin(time * 1.8 + norm * 9.5) * 0.45 +
+          Math.sin(time * 1.2 + norm * 19.0 + 1.2) * 0.25 +
+          Math.sin(time * 3.1 + norm * 28.0 + 0.8) * 0.15;
+
+        let barH = (wave + 0.85) * 0.5 * (height * 0.65) + minHeight;
+
+        if (mouseActive > 0.01 && mouseX >= 0) {
+          const dist = Math.abs(x - mouseX);
+          const sigma = 55;
+          const boost = Math.exp(-(dist * dist) / (2 * sigma * sigma)) * (height * 0.4) * mouseActive;
+          barH += boost;
+        }
+
+        for (const r of ripples) {
+          const dist = Math.abs(x - r.x);
+          const waveFront = r.age * 110;
+          const delta = dist - waveFront;
+          const pulse = Math.exp(-(delta * delta) / (2 * 28 * 28)) * Math.cos(delta * 0.2) * (height * 0.35) * r.amp;
+          barH += Math.max(0, pulse);
+        }
+
+        barH = Math.max(minHeight, Math.min(height - 4, barH));
+        ctx.fillRect(x, height - barH, barWidth, barH);
+      }
+
+      requestAnimationFrame(render);
+    }
+
+    wrap.addEventListener('mousemove', e => {
+      const rect = canvas.getBoundingClientRect();
+      mouseX = e.clientX - rect.left;
+      targetMouseActive = 1;
+    });
+
+    wrap.addEventListener('mouseleave', () => {
+      targetMouseActive = 0;
+      mouseX = -1;
+    });
+
+    wrap.addEventListener('click', e => {
+      const rect = canvas.getBoundingClientRect();
+      addRipple(e.clientX - rect.left);
+    });
+
+    window.addEventListener('resize', resize);
+
+    resize();
+    requestAnimationFrame(render);
+  }
+
+  // --- Init ---
+  document.addEventListener('DOMContentLoaded', () => {
+    setupUIBindings();
+    initAudioWaveVisualizer();
+    loadPeriodData(currentPeriod);
+    loadRecentTracks();
+  });
+})();
