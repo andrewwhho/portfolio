@@ -1,7 +1,27 @@
 /* -------------------------------------------------------------
    ANDREW HO - MUSIC PAGE STYLESHEET (music.css)
    Compact Dashboard Architecture - Zero Unnecessary Scrolling
+   Theme: Projects Background (bg4.gif + fixed attachment + gradient)
    ------------------------------------------------------------- */
+
+body {
+    background-image: url(images/bg4.gif);
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+    position: relative;
+    background-color: #080808;
+    min-height: 100vh;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(8, 8, 8, 0.92) 0%, rgba(8, 8, 8, 0.95) 100%);
+    pointer-events: none;
+    z-index: 0;
+}
 
 .music-page-section {
     padding: 85px 0 35px;
@@ -10,6 +30,11 @@
     min-height: calc(100vh - 70px);
     display: flex;
     flex-direction: column;
+}
+
+.music-page-section .container {
+    position: relative;
+    z-index: 2;
 }
 
 /* ----------------------- Compact Hero Header ----------------------- */
@@ -249,13 +274,13 @@
 }
 
 .music-card {
-    background: var(--card-bg);
+    background: rgba(18, 18, 18, 0.85);
     border: 1px solid var(--card-border);
     border-radius: 14px;
     padding: 10px;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -268,8 +293,8 @@
 .music-card:hover {
     transform: translateY(-4px);
     border-color: var(--card-border-hover);
-    background: var(--card-bg-hover);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6);
+    background: rgba(26, 26, 26, 0.92);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.7);
 }
 
 .music-card-img-wrap {
@@ -363,12 +388,13 @@
 
 /* ----------------------- Chart View (Horizontal Bars) ----------------------- */
 .music-chart-container {
-    background: var(--card-bg);
+    background: rgba(18, 18, 18, 0.85);
     border: 1px solid var(--card-border);
     border-radius: 14px;
     padding: 16px;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
     display: flex;
     flex-direction: column;
     gap: 6px;
@@ -464,12 +490,13 @@
 }
 
 .tracks-panel-card {
-    background: var(--card-bg);
+    background: rgba(18, 18, 18, 0.85);
     border: 1px solid var(--card-border);
     border-radius: 14px;
     padding: 16px 18px;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
     display: flex;
     flex-direction: column;
     gap: 4px;
