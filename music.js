@@ -39,7 +39,9 @@
       const urlParams = new URLSearchParams(window.location.search);
       const queryUser = urlParams.get('user');
       if (queryUser) return queryUser.trim();
-      return localStorage.getItem('lastfm_user') || LASTFM_CONFIG.defaultUser;
+      const stored = localStorage.getItem('lastfm_user');
+      if (stored && stored !== 'uniqlothug') return stored.trim();
+      return LASTFM_CONFIG.defaultUser;
     } catch (_) {
       return LASTFM_CONFIG.defaultUser;
     }
@@ -227,6 +229,37 @@
     }
   }
 
+  // --- Resolve Missing Artist Covers via Last.fm Top Album ---
+  async function resolveArtistCover(artistName) {
+    if (!artistName) return null;
+    const cacheKey = `lastfm_art_cov_${artistName.toLowerCase()}`;
+    const cached = getCache(cacheKey, 30 * 86400 * 1000);
+    if (cached) return cached;
+
+    try {
+      const data = await fetchLastFm({
+        method: 'artist.gettopalbums',
+        artist: artistName,
+        limit: '1',
+      });
+
+      const album = data?.topalbums?.album?.[0];
+      if (album && Array.isArray(album.image)) {
+        const found =
+          album.image.find(i => i.size === 'extralarge') ||
+          album.image.find(i => i.size === 'large') ||
+          album.image.find(i => i.size === 'medium');
+
+        if (found && found['#text'] && !found['#text'].includes('2a96cbd8b46e442fc41c2b86b821562f')) {
+          const url = found['#text'];
+          setCache(cacheKey, url);
+          return url;
+        }
+      }
+    } catch (_) {}
+    return null;
+  }
+
   // --- Artist-to-Album Artwork Mapper ---
   function getArtistArtworkMap(albums) {
     const map = new Map();
@@ -259,7 +292,7 @@
 
         return `
           <a href="${escapeHtml(artist.url)}" target="_blank" rel="noopener noreferrer" class="music-card">
-            <div class="music-card-img-wrap">
+            <div class="music-card-img-wrap" id="artist-wrap-${idx}">
               ${imgMarkup}
               <span class="music-rank-badge">#${rank}</span>
             </div>
@@ -276,6 +309,23 @@
       .join('');
 
     container.innerHTML = `<div class="music-cards-grid">${cardsHtml}</div>`;
+
+    // Progressive background resolution for any card still showing placeholder
+    artists.forEach((artist, idx) => {
+      const currentUrl = artist.imageUrl || artworkMap.get(artist.name?.toLowerCase());
+      if (!currentUrl) {
+        resolveArtistCover(artist.name).then(resolved => {
+          if (resolved) {
+            artist.imageUrl = resolved;
+            const wrap = document.getElementById(`artist-wrap-${idx}`);
+            if (wrap) {
+              const rank = String(idx + 1).padStart(2, '0');
+              wrap.innerHTML = `<img src="${escapeHtml(resolved)}" alt="${escapeHtml(artist.name)}" loading="lazy" decoding="async" /><span class="music-rank-badge">#${rank}</span>`;
+            }
+          }
+        });
+      }
+    });
   }
 
   // --- Render Albums (Grid View) ---
@@ -467,6 +517,22 @@
     if (data) {
       cachedData = data;
       renderActiveView();
+
+      // Check if any artist in cached data is missing an artwork and heal it
+      const missing = (cachedData.artists || []).filter(a => !a.imageUrl);
+      if (missing.length > 0) {
+        const artworkMap = getArtistArtworkMap(cachedData.albums);
+        Promise.allSettled(
+          missing.map(async a => {
+            const key = a.name.toLowerCase();
+            const url = artworkMap.get(key) || (await resolveArtistCover(a.name));
+            if (url) a.imageUrl = url;
+          })
+        ).then(() => {
+          setCache(cacheKey, cachedData);
+          renderActiveView();
+        });
+      }
       return;
     }
 
@@ -482,6 +548,31 @@
       const artists = artistsRes.status === 'fulfilled' ? artistsRes.value : [];
       const albums = albumsRes.status === 'fulfilled' ? albumsRes.value : [];
       const tracks = tracksRes.status === 'fulfilled' ? tracksRes.value : [];
+
+      const artworkMap = getArtistArtworkMap(albums);
+
+      // Match known artwork from albums or persistent cache
+      artists.forEach(a => {
+        const key = a.name.toLowerCase();
+        const cached = getCache(`lastfm_art_cov_${key}`, 30 * 86400 * 1000);
+        if (cached) {
+          a.imageUrl = cached;
+        } else if (artworkMap.has(key)) {
+          a.imageUrl = artworkMap.get(key);
+          setCache(`lastfm_art_cov_${key}`, a.imageUrl);
+        }
+      });
+
+      // Parallel resolution for any still-missing artist covers
+      const missing = artists.filter(a => !a.imageUrl);
+      if (missing.length > 0) {
+        await Promise.allSettled(
+          missing.map(async a => {
+            const url = await resolveArtistCover(a.name);
+            if (url) a.imageUrl = url;
+          })
+        );
+      }
 
       cachedData = {
         artists: artists,
