@@ -424,7 +424,7 @@ section {
 
 .stack-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(115px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
     gap: 12px;
     list-style: none;
     padding: 0;
@@ -443,6 +443,7 @@ section {
     color: #ffffff;
     transition: var(--transition-smooth);
     cursor: default;
+    white-space: nowrap;
 }
 
 .stack-item img {
@@ -450,6 +451,7 @@ section {
     height: 24px;
     object-fit: contain;
     transition: transform 0.3s ease;
+    flex-shrink: 0;
 }
 
 .stack-item:hover {
