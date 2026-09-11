@@ -185,12 +185,26 @@
     });
 
     const tracks = data?.toptracks?.track || [];
-    return tracks.map(t => ({
-      name: t.name || 'Unknown Track',
-      artist: (typeof t.artist === 'object' ? t.artist?.name : t.artist) || '',
-      playcount: Number(t.playcount) || 0,
-      url: t.url || `https://www.last.fm/music/${encodeURIComponent(t.artist?.name || '')}/_/${encodeURIComponent(t.name || '')}`,
-    }));
+    return tracks.map(t => {
+      let img = null;
+      if (Array.isArray(t.image)) {
+        const found =
+          t.image.find(i => i.size === 'large') ||
+          t.image.find(i => i.size === 'medium') ||
+          t.image.find(i => i.size === 'extralarge');
+        if (found && found['#text'] && !found['#text'].includes('2a96cbd8b46e442fc41c2b86b821562f')) {
+          img = found['#text'];
+        }
+      }
+
+      return {
+        name: t.name || 'Unknown Track',
+        artist: (typeof t.artist === 'object' ? t.artist?.name : t.artist) || '',
+        playcount: Number(t.playcount) || 0,
+        url: t.url || `https://www.last.fm/music/${encodeURIComponent(t.artist?.name || '')}/_/${encodeURIComponent(t.name || '')}`,
+        imageUrl: img,
+      };
+    });
   }
 
   // 4. Fetch Recent Tracks
@@ -203,10 +217,22 @@
     const tracks = data?.recenttracks?.track || [];
     return tracks.map(t => {
       const isNowPlaying = t['@attr'] && t['@attr'].nowplaying === 'true';
+      let img = null;
+      if (Array.isArray(t.image)) {
+        const found =
+          t.image.find(i => i.size === 'large') ||
+          t.image.find(i => i.size === 'medium') ||
+          t.image.find(i => i.size === 'extralarge');
+        if (found && found['#text'] && !found['#text'].includes('2a96cbd8b46e442fc41c2b86b821562f')) {
+          img = found['#text'];
+        }
+      }
+
       return {
         name: t.name || 'Unknown Track',
         artist: (typeof t.artist === 'object' ? t.artist['#text'] : t.artist) || '',
         url: t.url || '',
+        imageUrl: img,
         timestamp: isNowPlaying ? null : (t.date?.uts ? Number(t.date.uts) : null),
         isNowPlaying: isNowPlaying,
       };
@@ -257,6 +283,45 @@
         }
       }
     } catch (_) {}
+    return null;
+  }
+
+  // --- Resolve Track Artwork via Last.fm track.getInfo ---
+  async function resolveTrackArtwork(artistName, trackName) {
+    if (!artistName || !trackName) return null;
+    const cacheKey = `lastfm_trk_cov_${artistName.toLowerCase()}_${trackName.toLowerCase()}`;
+    const cached = getCache(cacheKey, 30 * 86400 * 1000);
+    if (cached) return cached;
+
+    try {
+      const data = await fetchLastFm({
+        method: 'track.getInfo',
+        artist: artistName,
+        track: trackName,
+      });
+
+      const album = data?.track?.album;
+      if (album && Array.isArray(album.image)) {
+        const found =
+          album.image.find(i => i.size === 'large') ||
+          album.image.find(i => i.size === 'medium') ||
+          album.image.find(i => i.size === 'extralarge');
+
+        if (found && found['#text'] && !found['#text'].includes('2a96cbd8b46e442fc41c2b86b821562f')) {
+          const url = found['#text'];
+          setCache(cacheKey, url);
+          return url;
+        }
+      }
+    } catch (_) {}
+
+    // Fallback: check artist cover
+    const artistCover = await resolveArtistCover(artistName);
+    if (artistCover) {
+      setCache(cacheKey, artistCover);
+      return artistCover;
+    }
+
     return null;
   }
 
@@ -424,10 +489,17 @@
     list.innerHTML = tracks
       .map((track, idx) => {
         const rank = String(idx + 1).padStart(2, '0');
+        const imgMarkup = track.imageUrl
+          ? `<img src="${escapeHtml(track.imageUrl)}" alt="${escapeHtml(track.name)}" loading="lazy" />`
+          : `<div class="track-thumb-placeholder">♫</div>`;
+
         return `
           <a href="${escapeHtml(track.url)}" target="_blank" rel="noopener noreferrer" class="track-row">
             <div class="track-row-left">
               <span class="track-index">${rank}</span>
+              <div class="track-thumb" id="top-track-thumb-${idx}">
+                ${imgMarkup}
+              </div>
               <div class="track-text-group">
                 <span class="track-name">${escapeHtml(track.name)}</span>
                 <span class="track-artist">${escapeHtml(track.artist)}</span>
@@ -438,6 +510,21 @@
         `;
       })
       .join('');
+
+    // Progressive background resolution for top tracks missing album art
+    tracks.forEach((track, idx) => {
+      if (!track.imageUrl) {
+        resolveTrackArtwork(track.artist, track.name).then(resolvedUrl => {
+          if (resolvedUrl) {
+            track.imageUrl = resolvedUrl;
+            const thumbEl = document.getElementById(`top-track-thumb-${idx}`);
+            if (thumbEl) {
+              thumbEl.innerHTML = `<img src="${escapeHtml(resolvedUrl)}" alt="${escapeHtml(track.name)}" loading="lazy" />`;
+            }
+          }
+        });
+      }
+    });
   }
 
   // --- Render Recent Scrobbles ---
@@ -466,10 +553,17 @@
           ? liveWave
           : `<span class="track-meta">${formatTimeAgo(track.timestamp)}</span>`;
 
+        const imgMarkup = track.imageUrl
+          ? `<img src="${escapeHtml(track.imageUrl)}" alt="${escapeHtml(track.name)}" loading="lazy" />`
+          : `<div class="track-thumb-placeholder">♫</div>`;
+
         return `
           <a href="${escapeHtml(track.url)}" target="_blank" rel="noopener noreferrer" class="track-row">
             <div class="track-row-left">
               <span class="track-index">${rank}</span>
+              <div class="track-thumb" id="recent-track-thumb-${idx}">
+                ${imgMarkup}
+              </div>
               <div class="track-text-group">
                 <span class="track-name">${escapeHtml(track.name)}</span>
                 <span class="track-artist">${escapeHtml(track.artist)}</span>
@@ -480,6 +574,21 @@
         `;
       })
       .join('');
+
+    // Progressive background resolution for recent tracks missing album art
+    tracks.forEach((track, idx) => {
+      if (!track.imageUrl) {
+        resolveTrackArtwork(track.artist, track.name).then(resolvedUrl => {
+          if (resolvedUrl) {
+            track.imageUrl = resolvedUrl;
+            const thumbEl = document.getElementById(`recent-track-thumb-${idx}`);
+            if (thumbEl) {
+              thumbEl.innerHTML = `<img src="${escapeHtml(resolvedUrl)}" alt="${escapeHtml(track.name)}" loading="lazy" />`;
+            }
+          }
+        });
+      }
+    });
   }
 
   // --- Category Filter Visibility ---
@@ -520,15 +629,21 @@
 
       // Check if any artist in cached data is missing an artwork and heal it
       const missing = (cachedData.artists || []).filter(a => !a.imageUrl);
-      if (missing.length > 0) {
+      const missingTracks = (cachedData.topTracks || []).filter(t => !t.imageUrl);
+
+      if (missing.length > 0 || missingTracks.length > 0) {
         const artworkMap = getArtistArtworkMap(cachedData.albums);
-        Promise.allSettled(
-          missing.map(async a => {
+        Promise.allSettled([
+          ...missing.map(async a => {
             const key = a.name.toLowerCase();
             const url = artworkMap.get(key) || (await resolveArtistCover(a.name));
             if (url) a.imageUrl = url;
+          }),
+          ...missingTracks.map(async t => {
+            const url = await resolveTrackArtwork(t.artist, t.name);
+            if (url) t.imageUrl = url;
           })
-        ).then(() => {
+        ]).then(() => {
           setCache(cacheKey, cachedData);
           renderActiveView();
         });
@@ -563,16 +678,20 @@
         }
       });
 
-      // Parallel resolution for any still-missing artist covers
+      // Parallel resolution for any still-missing artist covers & track artworks
       const missing = artists.filter(a => !a.imageUrl);
-      if (missing.length > 0) {
-        await Promise.allSettled(
-          missing.map(async a => {
-            const url = await resolveArtistCover(a.name);
-            if (url) a.imageUrl = url;
-          })
-        );
-      }
+      const missingTracks = tracks.filter(t => !t.imageUrl);
+
+      await Promise.allSettled([
+        ...missing.map(async a => {
+          const url = await resolveArtistCover(a.name);
+          if (url) a.imageUrl = url;
+        }),
+        ...missingTracks.map(async t => {
+          const url = await resolveTrackArtwork(t.artist, t.name);
+          if (url) t.imageUrl = url;
+        })
+      ]);
 
       cachedData = {
         artists: artists,

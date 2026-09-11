@@ -550,6 +550,42 @@ body::before {
     flex-shrink: 0;
 }
 
+.track-thumb {
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #0d0d0d;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.track-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.track-row:hover .track-thumb img {
+    transform: scale(1.08);
+}
+
+.track-thumb-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #141414, #202020);
+    color: rgba(255, 255, 255, 0.25);
+    font-size: 13px;
+}
+
 .track-text-group {
     min-width: 0;
     flex: 1;
