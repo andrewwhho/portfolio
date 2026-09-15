@@ -4,8 +4,9 @@
    Theme: Projects Background (bg4.gif + fixed attachment + gradient)
    ------------------------------------------------------------- */
 
+
 body {
-    background-image: url(images/bg4.gif);
+    background-image: url(images/American\ football\ house.jpg);
     background-size: cover;
     background-attachment: fixed;
     background-position: center;
