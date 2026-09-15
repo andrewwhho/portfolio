@@ -627,7 +627,7 @@
       cachedData = data;
       renderActiveView();
 
-      // Check if any artist in cached data is missing an artwork and heal it
+      // Check if any artist or track in cached data is missing an artwork and heal it
       const missing = (cachedData.artists || []).filter(a => !a.imageUrl);
       const missingTracks = (cachedData.topTracks || []).filter(t => !t.imageUrl);
 
