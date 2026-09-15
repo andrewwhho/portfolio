@@ -132,15 +132,15 @@ nav {
     transform: translateX(-50%);
     width: calc(100% - 40px);
     max-width: 1200px;
-    height: 54px;
+    height: 48px;
     padding: 0 28px;
     background: var(--glass-nav-bg);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
-    border: 1px solid var(--card-border);
-    border-radius: 36px;
+    /* border: 1px solid var(--card-border); */
+    /* border-radius: 36px; */
     z-index: 999;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    /* box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); */
     transition: var(--transition-smooth);
 }
 
@@ -294,7 +294,7 @@ nav ul.nav-links li a.active::after {
 .header-text2 {
     width: fit-content;
     font-size: 32px;
-    color: var(--text-secondary);
+    color: #ffffff;
     cursor: default;
     font-weight: 300;
     letter-spacing: 0.5px;
